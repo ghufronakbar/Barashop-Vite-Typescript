@@ -13,7 +13,7 @@ import { AxiosError } from "axios";
 import { APP_NAME } from "@/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 
-type Role = "Admin" | "Owner" | "ManagerOperational" | "Cashier";
+export type Role = "Admin" | "Owner" | "ManagerOperational" | "Cashier";
 
 export interface Decoded {
   id: string;

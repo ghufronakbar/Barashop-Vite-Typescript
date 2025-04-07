@@ -2,43 +2,36 @@ import { DashboardLayout } from "@/components/ui/layout/dashboard-layout";
 import { api } from "@/config/api";
 import { makeToast } from "@/helper/makeToast";
 import { Api } from "@/model/Api";
-import { Produk } from "@/model/Produk";
+import { Pelanggan } from "@/model/Pelanggan";
 import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PLACEHOLDER } from "@/constant/image";
 import formatDate from "@/helper/formatDate";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import formatRupiah from "@/helper/formatRupiah";
 
-const ProdukPage = () => {
-  const { filteredData, search, setSearch } = useProduks();
+const PelangganPage = () => {
+  const { filteredData, search, setSearch } = usePelanggans();
   const TABLE_HEADERS = [
     "No",
-    "",
     "Nama",
-    "Kategori",
-    "Harga",
-    "HPP*",
-    "Total Terjual",
+    "Email / No Telepon",
     "Terakhir Diubah",
     "",
   ];
   return (
     <DashboardLayout
-      title="Produk"
+      title="Pelanggan"
       childredHeader={
-        <Link to={`/produk/tambah`}>
+        <Link to={`/pelanggan/tambah`}>
           <Button variant="default">
             <Plus />
             Tambah
@@ -49,7 +42,7 @@ const ProdukPage = () => {
       <div className="relative w-full md:w-fit min-w-[300px]">
         <Input
           className="w-full"
-          placeholder="Cari produk..."
+          placeholder="Cari pelanggan..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -70,23 +63,11 @@ const ProdukPage = () => {
             {filteredData.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>
-                  <img
-                    src={item.gambar || PLACEHOLDER}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="min-w-12 min-h-12 w-12 h-12 object-cover rounded-xl"
-                  />
-                </TableCell>
                 <TableCell className="font-medium">{item.nama}</TableCell>
-                <TableCell>{item.kategori}</TableCell>
-                <TableCell>{formatRupiah(item.harga)}</TableCell>
-                <TableCell>{formatRupiah(item.hpp)}</TableCell>
-                <TableCell>{item.total_terjual}</TableCell>
+                <TableCell>{item.kode}</TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
-                  <Link to={`/produk/${item.id}`}>
+                  <Link to={`/pelanggan/${item.id}`}>
                     <Button variant="secondary">Edit</Button>
                   </Link>
                   <Button variant="destructive">Hapus</Button>
@@ -94,25 +75,24 @@ const ProdukPage = () => {
               </TableRow>
             ))}
           </TableBody>
-          <TableCaption>
-            *HPP dihitung dari rata rata harga pembelian
-          </TableCaption>
         </Table>
       </div>
     </DashboardLayout>
   );
 };
 
-const useProduks = () => {
-  const [data, setData] = useState<Produk[]>([]);
+const usePelanggans = () => {
+  const [data, setData] = useState<Pelanggan[]>([]);
   const [search, setSearch] = useState("");
-  const filteredData = data.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
+  const filteredData = data.filter(
+    (item) =>
+      item.nama.toLowerCase().includes(search.toLowerCase()) ||
+      item.kode.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {
     try {
-      const res = await api.get<Api<Produk[]>>("/produk");
+      const res = await api.get<Api<Pelanggan[]>>("/pelanggan");
       setData(res.data.data);
     } catch (error) {
       makeToast("error", error);
@@ -126,4 +106,4 @@ const useProduks = () => {
   return { filteredData, search, setSearch };
 };
 
-export default ProdukPage;
+export default PelangganPage;
