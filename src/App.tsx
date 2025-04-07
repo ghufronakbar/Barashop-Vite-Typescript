@@ -5,19 +5,24 @@ import RingkasanPage from "./pages/dashboard/RingkasanPage";
 import DetailProductPage from "./pages/DetailProductPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { SidebarProvider } from "./components/ui/sidebar";
+import { AuthProvider } from "./context/auth-context";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <Router>
-      <SidebarProvider>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/ringkasan" element={<RingkasanPage />} />
-          <Route path="/product/:id" element={<DetailProductPage />} />
-        </Routes>
-      </SidebarProvider>
+      <AuthProvider>
+        <SidebarProvider>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/ringkasan" element={<RingkasanPage />} />
+            <Route path="/product/:id" element={<DetailProductPage />} />
+          </Routes>
+        </SidebarProvider>
+        <ToastContainer />
+      </AuthProvider>
     </Router>
   );
 }

@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useAuth } from "@/context/auth-context";
 
 interface Props {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const DashboardLayout = ({ children, childredHeader, title }: Props) => {
+  useAuth();
   return (
     <div className="flex">
       <AppSidebar />
