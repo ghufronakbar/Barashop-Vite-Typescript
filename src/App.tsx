@@ -7,6 +7,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { AuthProvider } from "./context/auth-context";
 import { ToastContainer } from "react-toastify";
+import ProdukPage from "./pages/master/ProdukPage";
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/ringkasan" element={<RingkasanPage />} />
-            <Route path="/product/:id" element={<DetailProductPage />} />
+            <Route path="/produk" element={<ProdukPage />} />
+            <Route path="/produk/:id" element={<DetailProductPage />} />
           </Routes>
         </SidebarProvider>
         <ToastContainer />
