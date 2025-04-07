@@ -14,12 +14,34 @@ import {
 } from "@/components/ui/table";
 import formatDate from "@/helper/formatDate";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import { ExternalLink, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { AlertConfirmation } from "@/components/modal-confirmation";
 import { Link } from "react-router-dom";
 
 const PelangganPage = () => {
-  const { filteredData, search, setSearch } = usePelanggans();
+  const {
+    filteredData,
+    search,
+    setSearch,
+    onClickItem,
+    setIsOpen,
+    form,
+    onChange,
+    isOpen,
+    onClickAdd,
+    handleSubmit,
+    handleDelete,
+  } = usePelanggans();
   const TABLE_HEADERS = [
     "No",
     "Nama",
@@ -31,12 +53,10 @@ const PelangganPage = () => {
     <DashboardLayout
       title="Pelanggan"
       childredHeader={
-        <Link to={`/pelanggan/tambah`}>
-          <Button variant="default">
-            <Plus />
-            Tambah
-          </Button>
-        </Link>
+        <Button variant="default" onClick={onClickAdd}>
+          <Plus />
+          Tambah
+        </Button>
       }
     >
       <div className="relative w-full md:w-fit min-w-[300px]">
@@ -63,31 +83,136 @@ const PelangganPage = () => {
             {filteredData.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>
-                <TableCell>{item.kode}</TableCell>
+                <TableCell className="font-medium">{item.nama}</TableCell>                
+                <TableCell className="flex flex-row items-center gap-2">
+                  {item.kode}
+                  <Link
+                    to={
+                      item.jenis_kode === "Email"
+                        ? `mailto:${item.kode}`
+                        : `https://wa.me/${item.kode}`
+                    }
+                    target="_blank"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </Link>
+                </TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
-                  <Link to={`/pelanggan/${item.id}`}>
-                    <Button variant="secondary">Edit</Button>
-                  </Link>
-                  <Button variant="destructive">Hapus</Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => onClickItem(item, true)}
+                  >
+                    Edit
+                  </Button>
+                  <AlertConfirmation
+                    trigger={
+                      <Button
+                        variant="destructive"
+                        onClick={() => onClickItem(item)}
+                      >
+                        Hapus
+                      </Button>
+                    }
+                    onConfirm={handleDelete}
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>
+                {form.id ? "Edit Pelanggan" : "Tambah Pelanggan"}
+              </DialogTitle>
+              <DialogDescription>
+                Isi form dibawah ini untuk{" "}
+                {form.id ? "mengedit" : "menambahkan"} pelanggan
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label>Nama Pelanggan</Label>
+                <Input
+                  placeholder="Eren Yeager"
+                  value={form.nama}
+                  onChange={(e) => onChange(e, "nama")}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Email / No Telepon</Label>
+                <Input
+                  placeholder="pelanggan@example.com"
+                  value={form.kode}
+                  onChange={(e) => onChange(e, "kode")}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Simpan</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
+};
+
+interface PelangganDTO {
+  id: string;
+  nama: string;
+  kode: string;
+}
+
+const initPelangganDTO: PelangganDTO = {
+  id: "",
+  nama: "",
+  kode: "",
 };
 
 const usePelanggans = () => {
   const [data, setData] = useState<Pelanggan[]>([]);
   const [search, setSearch] = useState("");
-  const filteredData = data.filter(
-    (item) =>
-      item.nama.toLowerCase().includes(search.toLowerCase()) ||
-      item.kode.toLowerCase().includes(search.toLowerCase())
+  const [form, setForm] = useState<PelangganDTO>(initPelangganDTO);
+  const [isOpen, setIsOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  const onClickItem = (item: Pelanggan, isEdit?: boolean) => {
+    setForm({
+      id: item.id,
+      kode: item.kode,
+      nama: item.nama,
+    });
+    if (isEdit) setIsOpen(true);
+  };
+
+  const onClickAdd = () => {
+    setForm(initPelangganDTO);
+    setIsOpen(true);
+  };
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    key: keyof PelangganDTO
+  ) => {
+    setForm({
+      ...form,
+      [key]: e.target.value,
+    });
+  };
+
+  const filteredData = data.filter((item) =>
+    item.nama.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {
@@ -103,7 +228,74 @@ const usePelanggans = () => {
     fetchData();
   }, []);
 
-  return { filteredData, search, setSearch };
+  const handleSubmit = async () => {
+    try {
+      Object.entries(form).forEach(([key, value]) => {
+        if (!value && key !== "id") {
+          throw new Error("Semua kolom harus diisi");
+        }
+        if (
+          key === "kode" &&
+          !/^(62\d{8,}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(
+            value
+          )
+        ) {
+          throw new Error(
+            "Harus berupa nomor telepon berawalan 62 atau email yang valid"
+          );
+        }
+      });
+      if (pending) return;
+      setPending(true);
+      makeToast("info");
+      if (form.id) {
+        await api.put(`/pelanggan/${form.id}`, form);
+        await fetchData();
+        makeToast("success", "Berhasil mengedit pelanggan");
+      } else {
+        await api.post("/pelanggan", form);
+        await fetchData();
+        makeToast("success", "Berhasil menambahkan pelanggan");
+      }
+      setIsOpen(false);
+      setForm(initPelangganDTO);
+    } catch (error) {
+      makeToast("error", error);
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!form.id) return;
+      if (pending) return;
+      setPending(true);
+      makeToast("info");
+      await api.delete(`/pelanggan/${form.id}`);
+      await fetchData();
+      makeToast("success", "Berhasil menghapus pelanggan");
+    } catch (error) {
+      makeToast("error", error);
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return {
+    filteredData,
+    search,
+    setSearch,
+    onClickItem,
+    setIsOpen,
+    form,
+    onChange,
+    isOpen,
+    onClickAdd,
+    setForm,
+    handleSubmit,
+    handleDelete,
+  };
 };
 
 export default PelangganPage;

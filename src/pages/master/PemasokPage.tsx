@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { UploadImage } from "@/components/upload-image";
+import { AlertConfirmation } from "@/components/modal-confirmation";
+import { Link } from "react-router-dom";
 
 const PemasokPage = () => {
   const {
@@ -99,7 +101,9 @@ const PemasokPage = () => {
                 <TableCell>{item.alamat}</TableCell>
                 <TableCell className="flex flex-row items-center gap-2">
                   {item.telepon}
-                  <ExternalLink className="w-4 h-4" />
+                  <Link to={`https://wa.me/${item.telepon}`} target="_blank">
+                    <ExternalLink className="w-4 h-4" />
+                  </Link>
                 </TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
@@ -315,48 +319,3 @@ const usePemasoks = () => {
 };
 
 export default PemasokPage;
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
-interface Props {
-  trigger: React.ReactNode;
-  message?: string;
-  onConfirm?: () => void;
-}
-
-const AlertConfirmation: React.FC<Props> = ({
-  trigger,
-  message,
-  onConfirm,
-}) => {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {message || "Apakah kamu yakin ingin menghapus?"}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus akun Anda
-            secara permanen dan menghapus data Anda secara permanen.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Tutup</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Ya</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};

@@ -30,6 +30,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadImage } from "@/components/upload-image";
+import { AlertConfirmation } from "@/components/modal-confirmation";
 
 const ProdukPage = () => {
   const {
@@ -329,48 +330,3 @@ const useProduks = () => {
 };
 
 export default ProdukPage;
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
-interface Props {
-  trigger: React.ReactNode;
-  message?: string;
-  onConfirm?: () => void;
-}
-
-const AlertConfirmation: React.FC<Props> = ({
-  trigger,
-  message,
-  onConfirm,
-}) => {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {message || "Apakah kamu yakin ingin menghapus?"}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus akun Anda
-            secara permanen dan menghapus data Anda secara permanen.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Tutup</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Ya</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};
