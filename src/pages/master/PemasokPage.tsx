@@ -17,10 +17,32 @@ import formatDate from "@/helper/formatDate";
 import { Input } from "@/components/ui/input";
 import { ExternalLink, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { UploadImage } from "@/components/upload-image";
 
 const PemasokPage = () => {
-  const { filteredData, search, setSearch } = usePemasoks();
+  const {
+    filteredData,
+    search,
+    setSearch,
+    onClickItem,
+    setIsOpen,
+    form,
+    onChange,
+    isOpen,
+    onClickAdd,
+    setForm,
+    handleSubmit,
+    handleDelete,
+  } = usePemasoks();
   const TABLE_HEADERS = [
     "No",
     "",
@@ -34,12 +56,10 @@ const PemasokPage = () => {
     <DashboardLayout
       title="Pemasok"
       childredHeader={
-        <Link to={`/pemasok/tambah`}>
-          <Button variant="default">
-            <Plus />
-            Tambah
-          </Button>
-        </Link>
+        <Button variant="default" onClick={onClickAdd}>
+          <Plus />
+          Tambah
+        </Button>
       }
     >
       <div className="relative w-full md:w-fit min-w-[300px]">
@@ -77,31 +97,143 @@ const PemasokPage = () => {
                 </TableCell>
                 <TableCell className="font-medium">{item.nama}</TableCell>
                 <TableCell>{item.alamat}</TableCell>
-                <TableCell className="flex flex-row gap-2 items-center">
+                <TableCell className="flex flex-row items-center gap-2">
                   {item.telepon}
-                  <Link to={`https://wa.me/${item.telepon}`} target="_blank">
-                    <ExternalLink className="w-4 h-4" />
-                  </Link>
+                  <ExternalLink className="w-4 h-4" />
                 </TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
-                  <Link to={`/pemasok/${item.id}`}>
-                    <Button variant="secondary">Edit</Button>
-                  </Link>
-                  <Button variant="destructive">Hapus</Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => onClickItem(item, true)}
+                  >
+                    Edit
+                  </Button>
+                  <AlertConfirmation
+                    trigger={
+                      <Button
+                        variant="destructive"
+                        onClick={() => onClickItem(item)}
+                      >
+                        Hapus
+                      </Button>
+                    }
+                    onConfirm={handleDelete}
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>
+                {form.id ? "Edit Pemasok" : "Tambah Pemasok"}
+              </DialogTitle>
+              <DialogDescription>
+                Isi form dibawah ini untuk{" "}
+                {form.id ? "mengedit" : "menambahkan"} pemasok
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <UploadImage
+                image={form.gambar}
+                onChangeImage={(val) => setForm({ ...form, gambar: val })}
+              />
+              <div className="flex flex-col gap-2">
+                <Label>Nama Pemasok</Label>
+                <Input
+                  placeholder="Toko Bunga 669"
+                  value={form.nama}
+                  onChange={(e) => onChange(e, "nama")}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Alamat</Label>
+                <Input
+                  placeholder="Sleman, Yogyakarta, Indonesia"
+                  value={form.alamat}
+                  onChange={(e) => onChange(e, "alamat")}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Telepon</Label>
+                <Input
+                  placeholder="62812345678"
+                  value={form.telepon}
+                  onChange={(e) => onChange(e, "telepon")}
+                  type="number"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Simpan</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
+};
+
+interface PemasokDTO {
+  id: string;
+  nama: string;
+  alamat: string;
+  telepon: string;
+  gambar: string | null;
+}
+
+const initPemasokDTO: PemasokDTO = {
+  id: "",
+  nama: "",
+  alamat: "",
+  telepon: "",
+  gambar: null,
 };
 
 const usePemasoks = () => {
   const [data, setData] = useState<Pemasok[]>([]);
   const [search, setSearch] = useState("");
+  const [form, setForm] = useState<PemasokDTO>(initPemasokDTO);
+  const [isOpen, setIsOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  const onClickItem = (item: Pemasok, isEdit?: boolean) => {
+    setForm({
+      id: item.id,
+      telepon: item.telepon,
+      alamat: item.alamat,
+      nama: item.nama,
+      gambar: item.gambar,
+    });
+    if (isEdit) setIsOpen(true);
+  };
+
+  const onClickAdd = () => {
+    setForm(initPemasokDTO);
+    setIsOpen(true);
+  };
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    key: keyof PemasokDTO
+  ) => {
+    setForm({
+      ...form,
+      [key]: e.target.value,
+    });
+  };
+
   const filteredData = data.filter((item) =>
     item.nama.toLowerCase().includes(search.toLowerCase())
   );
@@ -119,7 +251,112 @@ const usePemasoks = () => {
     fetchData();
   }, []);
 
-  return { filteredData, search, setSearch };
+  const handleSubmit = async () => {
+    try {
+      Object.entries(form).forEach(([key, value]) => {
+        if (!value && key !== "id" && key !== "gambar") {
+          throw new Error("Semua kolom harus diisi");
+        }
+        if (key === "telepon" && !value.startsWith("62")) {
+          throw new Error("Nomor telepon harus dimulai dengan 62");
+        }
+      });
+      if (pending) return;
+      setPending(true);
+      makeToast("info");
+      if (form.id) {
+        await api.put(`/pemasok/${form.id}`, form);
+        await fetchData();
+        makeToast("success", "Berhasil mengedit pemasok");
+      } else {
+        await api.post("/pemasok", form);
+        await fetchData();
+        makeToast("success", "Berhasil menambahkan pemasok");
+      }
+      setIsOpen(false);
+      setForm(initPemasokDTO);
+    } catch (error) {
+      makeToast("error", error);
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!form.id) return;
+      if (pending) return;
+      setPending(true);
+      makeToast("info");
+      await api.delete(`/pemasok/${form.id}`);
+      await fetchData();
+      makeToast("success", "Berhasil menghapus pemasok");
+    } catch (error) {
+      makeToast("error", error);
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return {
+    filteredData,
+    search,
+    setSearch,
+    onClickItem,
+    setIsOpen,
+    form,
+    onChange,
+    isOpen,
+    onClickAdd,
+    setForm,
+    handleSubmit,
+    handleDelete,
+  };
 };
 
 export default PemasokPage;
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+interface Props {
+  trigger: React.ReactNode;
+  message?: string;
+  onConfirm?: () => void;
+}
+
+const AlertConfirmation: React.FC<Props> = ({
+  trigger,
+  message,
+  onConfirm,
+}) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {message || "Apakah kamu yakin ingin menghapus?"}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus akun Anda
+            secara permanen dan menghapus data Anda secara permanen.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Tutup</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>Ya</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
