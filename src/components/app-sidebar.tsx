@@ -95,8 +95,8 @@ const SIDEBAR_MENU: SidebarMenu[] = [
     title: "Transaksi",
     items: [
       {
-        title: "Penjualan",
-        url: "/penjualan",
+        title: "Riwayat Pesanan",
+        url: "/pesanan",
         icon: History,
       },
       {
@@ -105,14 +105,14 @@ const SIDEBAR_MENU: SidebarMenu[] = [
         icon: ShoppingBag,
       },
       {
+        title: "Cacat Produk",
+        url: "/cacat-produk",
+        icon: ShieldAlert,
+      },
+      {
         title: "Kasir",
         url: "/kasir",
         icon: ShoppingCart,
-      },
-      {
-        title: "Kerusakan Produk",
-        url: "/kerusakan-produk",
-        icon: ShieldAlert,
       },
     ],
   },
