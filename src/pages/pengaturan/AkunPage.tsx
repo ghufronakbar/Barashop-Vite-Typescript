@@ -13,6 +13,7 @@ import { DashboardLayout } from "@/components/ui/layout/dashboard-layout";
 import { Table, TableCell, TableRow } from "@/components/ui/table";
 import { UploadImage } from "@/components/upload-image";
 import { api } from "@/config/api";
+import { Decoded, useAuth } from "@/context/auth-context";
 import formatDate from "@/helper/formatDate";
 import { makeToast } from "@/helper/makeToast";
 import { Api } from "@/model/Api";
@@ -175,6 +176,8 @@ const useAkun = () => {
   const [logs, setLogs] = useState<LogAksi[]>([]);
   const [selected, setSelected] = useState<LogAksi | null>(null);
 
+  const { updateProfile } = useAuth();
+
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     key: "nama" | "email"
@@ -219,7 +222,14 @@ const useAkun = () => {
       if (pending || !data) return;
       setPending(true);
       makeToast("info");
-      await api.put("/akun", data);
+      const res = await api.put<Api<Pengguna>>("/akun", data);
+      updateProfile({
+        email: res.data.data.email,
+        gambar: res.data.data.gambar,
+        nama: res.data.data.nama,
+        peran: res.data.data.peran,
+        id: res.data.data.id,
+      } as Decoded);
       await fetchData();
       makeToast("success", "Berhasil mengedit akun");
     } catch (error) {

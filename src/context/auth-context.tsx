@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
 
   const fetchAuth = async (): Promise<Decoded | null> => {
-    try {      
+    try {
       const res = await api.get<Api<Decoded>>("/auth/check");
       setUser(res.data.data);
       Cookies.set(APP_NAME, JSON.stringify(res.data.data), { expires: 0.5 });
@@ -72,14 +72,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [pathname]);
 
-  const updateProfile = (userData: Decoded) => {
-    setUser(userData);
+  const updateProfile = (userData: Partial<Decoded>) => {
+    if (user) {
+      setUser({ ...user, ...userData });
+    }
     Cookies.set("user", JSON.stringify(userData), { expires: 0.5 });
   };
 
   const signOut = () => {
     setUser(null);
     Cookies.remove("user");
+    Cookies.remove("ACCESS_TOKEN");
     navigate("/login");
   };
 

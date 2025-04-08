@@ -32,7 +32,9 @@ import {
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { APP_NAME } from "@/constant";
 import { Link } from "react-router-dom";
-import { LOGO } from "@/constant/image";
+import { PROFILE } from "@/constant/image";
+import { useAuth } from "@/context/auth-context";
+import { Badge } from "./ui/badge";
 
 interface SidebarMenu {
   title: string;
@@ -151,17 +153,28 @@ const SIDEBAR_MENU: SidebarMenu[] = [
 ];
 
 export function AppSidebar() {
+  const { user } = useAuth();
   return (
     <Sidebar>
-      <SidebarHeader className="font-bold flex flex-row items-center text-lg gap-4 ml-2 my-2">
-        <img
-          src={LOGO}
-          alt=""
-          width={80}
-          height={80}
-          className="min-w-10 min-h-10 w-10 h-10 rounded-full object-cover"
-        />
-        {APP_NAME}
+      <SidebarHeader className="">
+        <div className="font-bold flex flex-row items-center text-lg gap-2 my-2 mx-auto overflow-hidden w-full">
+          <img
+            src={user?.gambar || PROFILE}
+            alt=""
+            width={80}
+            height={80}
+            className="min-w-10 min-h-10 w-10 h-10 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <div className="font-medium text-sm line-clamp-1">{user?.nama}</div>
+            <div className="font-normal text-xs line-clamp-1">
+              {user?.email}
+            </div>
+            <Badge className="font-normal text-2xs line-clamp-1 mt-1">
+              {user?.peran}
+            </Badge>
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {SIDEBAR_MENU.map((item, index) => (
@@ -185,6 +198,9 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+        <span className="text-xs text-gray-400 text-center mb-4">
+          &copy; {APP_NAME} 2025
+        </span>
       </SidebarContent>
     </Sidebar>
   );

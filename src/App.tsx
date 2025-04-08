@@ -17,6 +17,8 @@ import KirimPesanPage from "./pages/dashboard/KirimPesanPage";
 import InformasiPembayaranPage from "./pages/dashboard/InformasiPembayaranPage";
 import AkunPage from "./pages/pengaturan/AkunPage";
 import PrivasiPage from "./pages/pengaturan/PrivasiPage";
+import LogAktivitasPage from "./pages/pengaturan/LogAktivitasPage";
+import LogoutPage from "./pages/pengaturan/LogoutPage";
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
 
             <Route path="/akun" element={<AkunPage />} />
             <Route path="/privasi" element={<PrivasiPage />} />
+            <Route path="/log-aktivitas" element={<LogAktivitasPage />} />
+            <Route path="/logout" element={<LogoutPage />} />
           </Routes>
         </SidebarProvider>
         <ToastContainer />
