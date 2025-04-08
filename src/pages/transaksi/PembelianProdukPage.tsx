@@ -184,7 +184,7 @@ const PembelianProdukPage = () => {
                   value={form.pemasok_id}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih Produk" />
+                    <SelectValue placeholder="Pilih Pemasok Produk" />
                   </SelectTrigger>
                   <SelectContent>
                     {pemasoks.map((item) => (

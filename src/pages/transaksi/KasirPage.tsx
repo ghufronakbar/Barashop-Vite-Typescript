@@ -80,8 +80,8 @@ const KasirPage = () => {
         </Button>
       }
     >
-      <div className="flex flex-col md:flex-row gap-4 justify-start md:justify-between">
-        <div className="border-input rounded-md border bg-transparent p-4 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 overflow-auto w-full md:w-1/2 lg:w-2/3">
+      <div className="flex flex-col lg:flex-row gap-4 justify-start md:justify-between">
+        <div className="border-input rounded-md border bg-transparent p-4 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 overflow-auto w-full lg:w-1/2 xl:w-2/3">
           <h2 className="text-2xl font-bold">Pilih Produk</h2>
           <div className="relative w-full md:w-fit min-w-[300px]">
             <Input
@@ -124,7 +124,7 @@ const KasirPage = () => {
             ))}
           </div>
         </div>
-        <div className="border-input rounded-md border bg-transparent p-4 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 overflow-auto w-full md:w-1/2 lg:w-1/3 sticky top-0 h-fit">
+        <div className="border-input rounded-md border bg-transparent p-4 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 overflow-auto w-full lg:w-1/2 xl:w-1/3 sticky top-0 h-fit">
           <h2 className="text-2xl font-bold">Pesanan</h2>
           {items.length ? (
             items.map((item) => (
@@ -425,11 +425,9 @@ const useKasir = () => {
   };
 
   const onIncrease = (item: ItemPesananDTO) => {
-    const isExist = items.find((i) => i.produk_id === item.produk_id);
+    const flattedProduk = data.flatMap((item) => item.produks);
+    const isExist = flattedProduk.find((i) => i.id === item.produk_id);
 
-    if (item.jumlah < 1) {
-      return makeToast("error", "Stok produk tidak mencukupi");
-    }
     if (isExist && isExist.jumlah === item.jumlah) {
       return makeToast("error", "Stok produk tidak mencukupi");
     }
