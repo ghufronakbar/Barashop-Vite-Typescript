@@ -16,6 +16,7 @@ import PesananPage from "./pages/transaksi/PesananPage";
 import KirimPesanPage from "./pages/dashboard/KirimPesanPage";
 import InformasiPembayaranPage from "./pages/dashboard/InformasiPembayaranPage";
 import AkunPage from "./pages/pengaturan/AkunPage";
+import PrivasiPage from "./pages/pengaturan/PrivasiPage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             <Route path="/pesanan" element={<PesananPage />} />
 
             <Route path="/akun" element={<AkunPage />} />
+            <Route path="/privasi" element={<PrivasiPage />} />
           </Routes>
         </SidebarProvider>
         <ToastContainer />
