@@ -41,6 +41,7 @@ export interface Transaksi {
   url_redirect: string | null;
   pesanan_id: string;
   is_deleted: boolean;
+  detail: unknown;
   created_at: Date;
   updated_at: Date;
 }

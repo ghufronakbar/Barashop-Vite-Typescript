@@ -75,13 +75,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateProfile = (userData: Partial<Decoded>) => {
     if (user) {
       setUser({ ...user, ...userData });
+      Cookies.set(APP_NAME, JSON.stringify({ ...user, ...userData }), {
+        expires: 0.5,
+      });
     }
-    Cookies.set("user", JSON.stringify(userData), { expires: 0.5 });
   };
 
   const signOut = () => {
     setUser(null);
-    Cookies.remove("user");
+    Cookies.remove(APP_NAME);
     Cookies.remove("ACCESS_TOKEN");
     navigate("/login");
   };

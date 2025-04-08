@@ -26,6 +26,7 @@ import {
 import { Pesanan } from "@/model/Pesanan";
 import { PLACEHOLDER } from "@/constant/image";
 import formatRupiah from "@/helper/formatRupiah";
+import JSONPretty from "react-json-pretty";
 
 const PesananPage = () => {
   const {
@@ -119,7 +120,7 @@ const PesananPage = () => {
             <DialogTitle>Detail Pesanan</DialogTitle>
             <DialogDescription>ID: #{selected?.id}</DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4 overflow-scroll">
+          <div className="flex flex-col gap-4 overflow-scroll h-[60vh]">
             <div className="flex flex-col gap-2">
               <h4>Detail Transaksi</h4>
               <Table className="text-sm">
@@ -205,6 +206,15 @@ const PesananPage = () => {
                 ))}
               </Table>
             </div>
+            {selected?.transaksi.metode === "VirtualAccountOrBank" &&
+              !!selected.transaksi.detail && (
+                <div className="flex flex-col gap-2">
+                  <h4>Detail Pembayaran</h4>
+                  <div className="max-h-[30vh] overflow-scroll">
+                    <JSONPretty data={selected?.transaksi?.detail} />
+                  </div>
+                </div>
+              )}
           </div>
           <DialogFooter>
             {selected?.pelanggan && (
