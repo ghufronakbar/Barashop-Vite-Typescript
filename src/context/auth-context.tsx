@@ -23,6 +23,7 @@ export interface Decoded {
   gambar: string | null;
   token: string;
   iat: number;
+  exp: number;
 }
 
 interface AuthContextProps {
@@ -41,10 +42,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
 
   const fetchAuth = async (): Promise<Decoded | null> => {
-    try {
+    try {      
       const res = await api.get<Api<Decoded>>("/auth/check");
       setUser(res.data.data);
-      Cookies.set(APP_NAME, JSON.stringify(res.data.data), { expires: 7 });
+      Cookies.set(APP_NAME, JSON.stringify(res.data.data), { expires: 0.5 });
       return res.data.data;
     } catch (error) {
       console.log(error);
@@ -62,9 +63,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (ALLOWED_PATHS.includes(pathname)) {
       return;
     }
-    const userCookie = Cookies.get(APP_NAME);    
-    if (userCookie) {
-      const decoded: Decoded = JSON.parse(userCookie);
+    const userCookie = Cookies.get(APP_NAME);
+    const decoded: Decoded | null = userCookie ? JSON.parse(userCookie) : null;
+    if (decoded && decoded.exp * 1000 > Date.now()) {
       setUser(decoded);
     } else {
       fetchAuth();
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateProfile = (userData: Decoded) => {
     setUser(userData);
-    Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+    Cookies.set("user", JSON.stringify(userData), { expires: 0.5 });
   };
 
   const signOut = () => {

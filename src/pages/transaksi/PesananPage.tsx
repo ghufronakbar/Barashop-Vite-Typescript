@@ -144,9 +144,7 @@ const PesananPage = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="font-medium">
-                    Status
-                  </TableCell>
+                  <TableCell className="font-medium">Status</TableCell>
                   <TableCell className="text-right">
                     {selected?.transaksi?.status}
                   </TableCell>
@@ -209,9 +207,11 @@ const PesananPage = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={sendNota} variant="secondary">
-              Kirim Nota
-            </Button>
+            {selected?.pelanggan && (
+              <Button onClick={sendNota} variant="secondary">
+                Kirim Nota
+              </Button>
+            )}
             <Button onClick={() => setSelected(null)}>Tutup</Button>
           </DialogFooter>
         </DialogContent>

@@ -14,6 +14,8 @@ import {
   LogOut,
   Factory,
   Lock,
+  HistoryIcon,
+  MessageCircleIcon,
 } from "lucide-react";
 
 import {
@@ -63,6 +65,11 @@ const SIDEBAR_MENU: SidebarMenu[] = [
         title: "Informasi Pembayaran",
         url: "/informasi-pembayaran",
         icon: Info,
+      },
+      {
+        title: "Kirim Pesan",
+        url: "/kirim-pesan",
+        icon: MessageCircleIcon,
       },
     ],
   },
@@ -123,6 +130,11 @@ const SIDEBAR_MENU: SidebarMenu[] = [
         title: "Akun",
         url: "/akun",
         icon: CircleUserRound,
+      },
+      {
+        title: "Log Aktivitas",
+        url: "/log-aktivitas",
+        icon: HistoryIcon,
       },
       {
         title: "Privasi",

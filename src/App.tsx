@@ -13,6 +13,8 @@ import PelangganPage from "./pages/master/PelangganPage";
 import PembelianProdukPage from "./pages/transaksi/PembelianProdukPage";
 import CacatProdukPage from "./pages/transaksi/CacatProdukPage";
 import PesananPage from "./pages/transaksi/PesananPage";
+import KirimPesanPage from "./pages/dashboard/KirimPesanPage";
+import InformasiPembayaranPage from "./pages/dashboard/InformasiPembayaranPage";
 
 function App() {
   return (
@@ -25,6 +27,11 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             <Route path="/ringkasan" element={<RingkasanPage />} />
+            <Route path="/kirim-pesan" element={<KirimPesanPage />} />
+            <Route
+              path="/informasi-pembayaran"
+              element={<InformasiPembayaranPage />}
+            />
 
             <Route path="/produk" element={<ProdukPage />} />
             <Route path="/pemasok" element={<PemasokPage />} />
