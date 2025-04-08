@@ -19,6 +19,8 @@ import AkunPage from "./pages/pengaturan/AkunPage";
 import PrivasiPage from "./pages/pengaturan/PrivasiPage";
 import LogAktivitasPage from "./pages/pengaturan/LogAktivitasPage";
 import LogoutPage from "./pages/pengaturan/LogoutPage";
+import KasirPage from "./pages/transaksi/KasirPage";
+import PaymentPage from "./pages/transaksi/PaymentPage";
 
 function App() {
   return (
@@ -45,6 +47,8 @@ function App() {
             <Route path="/pembelian-produk" element={<PembelianProdukPage />} />
             <Route path="/cacat-produk" element={<CacatProdukPage />} />
             <Route path="/pesanan" element={<PesananPage />} />
+            <Route path="/kasir" element={<KasirPage />} />
+            <Route path="/payment/:id" element={<PaymentPage />} />
 
             <Route path="/akun" element={<AkunPage />} />
             <Route path="/privasi" element={<PrivasiPage />} />

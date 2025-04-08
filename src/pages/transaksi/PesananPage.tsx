@@ -37,6 +37,7 @@ const PesananPage = () => {
     selected,
     setSelected,
     sendNota,
+    checkStatus,
   } = usePesanans();
   const TABLE_HEADERS = [
     "No",
@@ -217,11 +218,17 @@ const PesananPage = () => {
               )}
           </div>
           <DialogFooter>
-            {selected?.pelanggan && (
-              <Button onClick={sendNota} variant="secondary">
-                Kirim Nota
+            {selected?.transaksi.status === "Pending" && (
+              <Button onClick={checkStatus} variant="secondary">
+                Cek Status
               </Button>
             )}
+            {selected?.pelanggan &&
+              selected?.transaksi.status === "Success" && (
+                <Button onClick={sendNota} variant="secondary">
+                  Kirim Nota
+                </Button>
+              )}
             <Button onClick={() => setSelected(null)}>Tutup</Button>
           </DialogFooter>
         </DialogContent>
@@ -274,6 +281,18 @@ const usePesanans = () => {
     }
   };
 
+  const checkStatus = async () => {
+    try {
+      if (!selected) return;
+      makeToast("info");
+      const res = await api.get<Api<Pesanan>>(`/pesanan/${selected?.id}`);
+      setSelected(res?.data?.data);
+      await fetchData();
+    } catch (error) {
+      makeToast("error", error);
+    }
+  };
+
   return {
     filteredData,
     search,
@@ -282,6 +301,7 @@ const usePesanans = () => {
     selected,
     setSelected,
     sendNota,
+    checkStatus,
   };
 };
 
