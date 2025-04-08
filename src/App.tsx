@@ -15,6 +15,7 @@ import CacatProdukPage from "./pages/transaksi/CacatProdukPage";
 import PesananPage from "./pages/transaksi/PesananPage";
 import KirimPesanPage from "./pages/dashboard/KirimPesanPage";
 import InformasiPembayaranPage from "./pages/dashboard/InformasiPembayaranPage";
+import AkunPage from "./pages/pengaturan/AkunPage";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
             <Route path="/pembelian-produk" element={<PembelianProdukPage />} />
             <Route path="/cacat-produk" element={<CacatProdukPage />} />
             <Route path="/pesanan" element={<PesananPage />} />
+
+            <Route path="/akun" element={<AkunPage />} />
           </Routes>
         </SidebarProvider>
         <ToastContainer />
