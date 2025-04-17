@@ -37,7 +37,7 @@ import { PROFILE } from "@/constant/image";
 import { Role, useAuth } from "@/context/auth-context";
 import { Badge } from "./ui/badge";
 
-export type AuthPage =
+export type AuthPageType =
   | "ringkasan"
   | "laporan"
   | "informasi"
@@ -61,7 +61,7 @@ interface SidebarMenu {
 interface SidebarMenuItem {
   title: string;
   url: string;
-  auth: AuthPage;
+  auth: AuthPageType;
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;

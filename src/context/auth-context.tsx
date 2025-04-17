@@ -9,7 +9,6 @@ import Cookies from "js-cookie";
 import { api } from "@/config/api";
 import { makeToast } from "@/helper/makeToast";
 import { Api } from "@/model/Api";
-import { AxiosError } from "axios";
 import { APP_NAME } from "@/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -70,10 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return res.data.data;
     } catch (error) {
       console.log(error);
-      makeToast("error", error);
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        navigate("/login");
-      }
+      makeToast("error", error);      
       return null;
     }
   };
