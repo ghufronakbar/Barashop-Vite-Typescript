@@ -248,7 +248,6 @@ const usePelanggans = () => {
       });
       if (pending) return;
       setPending(true);
-      makeToast("info");
       if (form.id) {
         setIsOpen(false);
         await makeConfirm(async () => await api.put(`/pelanggan/${form.id}`, form));        

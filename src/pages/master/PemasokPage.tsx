@@ -268,7 +268,6 @@ const usePemasoks = () => {
       });
       if (pending) return;
       setPending(true);
-      makeToast("info");
       if (form.id) {
         setIsOpen(false);
         await makeConfirm(async () => await api.put(`/pemasok/${form.id}`, form));        

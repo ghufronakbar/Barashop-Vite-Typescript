@@ -21,6 +21,7 @@ import LogAktivitasPage from "./pages/pengaturan/LogAktivitasPage";
 import LogoutPage from "./pages/pengaturan/LogoutPage";
 import KasirPage from "./pages/transaksi/KasirPage";
 import PaymentPage from "./pages/transaksi/PaymentPage";
+import PeranPage from "./pages/sistem/PeranPage";
 
 function App() {
   return (
@@ -39,10 +40,12 @@ function App() {
               element={<InformasiPembayaranPage />}
             />
 
-            <Route path="/produk" element={<ProdukPage />} />
-            <Route path="/pemasok" element={<PemasokPage />} />
             <Route path="/pengguna" element={<PenggunaPage />} />
             <Route path="/pelanggan" element={<PelangganPage />} />
+            <Route path="/peran" element={<PeranPage />} />
+
+            <Route path="/produk" element={<ProdukPage />} />
+            <Route path="/pemasok" element={<PemasokPage />} />
 
             <Route path="/pembelian-produk" element={<PembelianProdukPage />} />
             <Route path="/cacat-produk" element={<CacatProdukPage />} />

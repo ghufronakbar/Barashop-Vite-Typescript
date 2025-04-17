@@ -10,4 +10,5 @@ export interface Pengguna {
   created_at: Date;
   updated_at: Date;
   gambar: string | null;
+  token: string;
 }
