@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label";
 import { UploadImage } from "@/components/upload-image";
 import { AlertConfirmation } from "@/components/modal-confirmation";
 import { Link } from "react-router-dom";
+import { makeConfirm } from "@/helper/makeConfirm";
 
 const PemasokPage = () => {
   const {
@@ -269,15 +270,16 @@ const usePemasoks = () => {
       setPending(true);
       makeToast("info");
       if (form.id) {
-        await api.put(`/pemasok/${form.id}`, form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.put(`/pemasok/${form.id}`, form));        
         await fetchData();
         makeToast("success", "Berhasil mengedit pemasok");
       } else {
-        await api.post("/pemasok", form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.post("/pemasok", form));
         await fetchData();
         makeToast("success", "Berhasil menambahkan pemasok");
       }
-      setIsOpen(false);
       setForm(initPemasokDTO);
     } catch (error) {
       makeToast("error", error);
@@ -291,8 +293,7 @@ const usePemasoks = () => {
       if (!form.id) return;
       if (pending) return;
       setPending(true);
-      makeToast("info");
-      await api.delete(`/pemasok/${form.id}`);
+      await makeConfirm(async () => await api.delete(`/pemasok/${form.id}`));      
       await fetchData();
       makeToast("success", "Berhasil menghapus pemasok");
     } catch (error) {

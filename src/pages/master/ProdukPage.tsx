@@ -31,6 +31,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadImage } from "@/components/upload-image";
 import { AlertConfirmation } from "@/components/modal-confirmation";
+import { makeConfirm } from "@/helper/makeConfirm";
 
 const ProdukPage = () => {
   const {
@@ -282,15 +283,16 @@ const useProduks = () => {
       setPending(true);
       makeToast("info");
       if (form.id) {
-        await api.put(`/produk/${form.id}`, form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.put(`/produk/${form.id}`, form));        
         await fetchData();
         makeToast("success", "Berhasil mengedit produk");
       } else {
-        await api.post("/produk", form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.post("/produk", form));
         await fetchData();
         makeToast("success", "Berhasil menambahkan produk");
-      }
-      setIsOpen(false);
+      }      
       setForm(initProdukDTO);
     } catch (error) {
       makeToast("error", error);
@@ -304,8 +306,7 @@ const useProduks = () => {
       if (!form.id) return;
       if (pending) return;
       setPending(true);
-      makeToast("info");
-      await api.delete(`/produk/${form.id}`);
+      await makeConfirm(async () => await api.delete(`/produk/${form.id}`));      
       await fetchData();
       makeToast("success", "Berhasil menghapus produk");
     } catch (error) {

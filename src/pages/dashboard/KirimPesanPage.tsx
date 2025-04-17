@@ -28,6 +28,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { APP_NAME } from "@/constant";
+import { makeConfirm } from "@/helper/makeConfirm";
 
 const KirimPesanPage = () => {
   const {
@@ -237,8 +238,7 @@ const useKirimPesans = () => {
       });
       if (pending) return;
       setPending(true);
-      makeToast("info");
-      await api.post("/pesan", form);
+      await makeConfirm(async () => await api.post("/pesan", form));      
       await fetchData();
       makeToast("success", "Berhasil menambahkan pesan");
       setIsOpen(false);

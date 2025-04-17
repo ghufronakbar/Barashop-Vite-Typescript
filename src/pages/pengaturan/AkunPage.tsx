@@ -83,7 +83,7 @@ const AkunPage = () => {
           </div>
           <div className="flex flex-col gap-2 w-full">
             <Label>Jabatan / Peran</Label>
-            <Input value={data?.peran} placeholder="Loading.." disabled />
+            <Input value={data?.peran?.nama} placeholder="Loading.." disabled />
           </div>
         </div>
         <div className="border-input w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 max-h-[80vh] overflow-auto">

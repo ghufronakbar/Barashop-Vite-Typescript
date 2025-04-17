@@ -2,7 +2,7 @@ import { DashboardLayout } from "@/components/ui/layout/dashboard-layout";
 import { api } from "@/config/api";
 import { makeToast } from "@/helper/makeToast";
 import { Api } from "@/model/Api";
-import { Pelanggan } from "@/model/Pelanggan";
+import { Pengguna } from "@/model/Pengguna";
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -27,8 +27,18 @@ import {
 import { Label } from "@/components/ui/label";
 import { AlertConfirmation } from "@/components/modal-confirmation";
 import { Link } from "react-router-dom";
+import { PROFILE } from "@/constant/image";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Role } from "@/context/auth-context";
+import { makeConfirm } from "@/helper/makeConfirm";
 
-const PelangganPage = () => {
+const PenggunaPage = () => {
   const {
     filteredData,
     search,
@@ -41,17 +51,21 @@ const PelangganPage = () => {
     onClickAdd,
     handleSubmit,
     handleDelete,
-  } = usePelanggans();
+    onChangePeran,
+    perans,
+  } = usePenggunas();
   const TABLE_HEADERS = [
     "No",
+    "",
     "Nama",
-    "Email / No Telepon",
+    "Email",
+    "Jabatan",
     "Terakhir Diubah",
     "",
   ];
   return (
     <DashboardLayout
-      title="Pelanggan"
+      title="Pengguna"
       childredHeader={
         <Button variant="default" onClick={onClickAdd}>
           <Plus />
@@ -62,7 +76,7 @@ const PelangganPage = () => {
       <div className="relative w-full md:w-fit min-w-[300px]">
         <Input
           className="w-full"
-          placeholder="Cari pelanggan..."
+          placeholder="Cari pengguna..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -83,19 +97,24 @@ const PelangganPage = () => {
             {filteredData.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>                
+                <TableCell>
+                  <img
+                    src={item.gambar || PROFILE}
+                    alt=""
+                    width={200}
+                    height={200}
+                    className="min-w-12 min-h-12 w-12 h-12 object-cover rounded-xl"
+                  />
+                </TableCell>
+                <TableCell className="font-medium">{item.nama}</TableCell>
                 <TableCell className="flex flex-row items-center gap-2">
-                  {item.kode}
-                  <Link
-                    to={
-                      item.jenis_kode === "Email"
-                        ? `mailto:${item.kode}`
-                        : `https://wa.me/${item.kode}`
-                    }
-                    target="_blank"
-                  >
+                  {item.email}
+                  <Link to="mailto:${item.kode}" target="_blank">
                     <ExternalLink className="w-4 h-4" />
                   </Link>
+                </TableCell>
+                <TableCell className="font-medium">
+                  {item?.peran?.nama}
                 </TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
@@ -133,29 +152,44 @@ const PelangganPage = () => {
           >
             <DialogHeader>
               <DialogTitle>
-                {form.id ? "Edit Pelanggan" : "Tambah Pelanggan"}
+                {form.id ? "Edit Pengguna" : "Tambah Pengguna"}
               </DialogTitle>
               <DialogDescription>
                 Isi form dibawah ini untuk{" "}
-                {form.id ? "mengedit" : "menambahkan"} pelanggan
+                {form.id ? "mengedit" : "menambahkan"} pengguna
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <Label>Nama Pelanggan</Label>
+                <Label>Nama Pengguna</Label>
                 <Input
                   placeholder="Eren Yeager"
                   value={form.nama}
                   onChange={(e) => onChange(e, "nama")}
+                  disabled={!!form.id}
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label>Email / No Telepon</Label>
+                <Label>Email</Label>
                 <Input
-                  placeholder="pelanggan@example.com"
-                  value={form.kode}
-                  onChange={(e) => onChange(e, "kode")}
+                  placeholder="pengguna@example.com"
+                  value={form.email}
+                  onChange={(e) => onChange(e, "email")}
+                  disabled={!!form.id}
                 />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Jabatan / Peran</Label>
+                <Select onValueChange={onChangePeran} value={form.peran_id}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Jabatan / Peran" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {perans.map((item) => (
+                      <SelectItem value={item.id}>{item.nama}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <DialogFooter>
@@ -168,42 +202,52 @@ const PelangganPage = () => {
   );
 };
 
-interface PelangganDTO {
+interface PenggunaDTO {
   id: string;
   nama: string;
-  kode: string;
+  email: string;
+  peran_id: string;
 }
 
-const initPelangganDTO: PelangganDTO = {
+const initPenggunaDTO: PenggunaDTO = {
   id: "",
   nama: "",
-  kode: "",
+  email: "",
+  peran_id: "",
 };
 
-const usePelanggans = () => {
-  const [data, setData] = useState<Pelanggan[]>([]);
+const usePenggunas = () => {
+  const [data, setData] = useState<Pengguna[]>([]);
   const [search, setSearch] = useState("");
-  const [form, setForm] = useState<PelangganDTO>(initPelangganDTO);
+  const [form, setForm] = useState<PenggunaDTO>(initPenggunaDTO);
   const [isOpen, setIsOpen] = useState(false);
   const [pending, setPending] = useState(false);
 
-  const onClickItem = (item: Pelanggan, isEdit?: boolean) => {
+  const onClickItem = (item: Pengguna, isEdit?: boolean) => {
     setForm({
       id: item.id,
-      kode: item.kode,
       nama: item.nama,
+      email: item.email,
+      peran_id: item.peran.id,
     });
     if (isEdit) setIsOpen(true);
   };
 
   const onClickAdd = () => {
-    setForm(initPelangganDTO);
+    setForm(initPenggunaDTO);
     setIsOpen(true);
+  };
+
+  const onChangePeran = (value: string) => {
+    setForm({
+      ...form,
+      peran_id: value,
+    });
   };
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: keyof PelangganDTO
+    key: keyof PenggunaDTO
   ) => {
     setForm({
       ...form,
@@ -217,7 +261,7 @@ const usePelanggans = () => {
 
   const fetchData = async () => {
     try {
-      const res = await api.get<Api<Pelanggan[]>>("/pelanggan");
+      const res = await api.get<Api<Pengguna[]>>("/pengguna");
       setData(res.data.data);
     } catch (error) {
       makeToast("error", error);
@@ -232,33 +276,32 @@ const usePelanggans = () => {
     try {
       Object.entries(form).forEach(([key, value]) => {
         if (!value && key !== "id") {
+          console.log(key, value);
           throw new Error("Semua kolom harus diisi");
         }
         if (
-          key === "kode" &&
-          !/^(62\d{8,}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(
-            value
-          )
+          key === "email" &&
+          !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
         ) {
-          throw new Error(
-            "Harus berupa nomor telepon berawalan 62 atau email yang valid"
-          );
+          throw new Error("Harus berupa email valid");
         }
       });
       if (pending) return;
       setPending(true);
-      makeToast("info");
       if (form.id) {
-        await api.put(`/pelanggan/${form.id}`, form);
+        setIsOpen(false);
+        await makeConfirm(
+          async () => await api.put(`/pengguna/${form.id}`, form)
+        );
         await fetchData();
-        makeToast("success", "Berhasil mengedit pelanggan");
+        makeToast("success", "Berhasil mengedit pengguna");
       } else {
-        await api.post("/pelanggan", form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.post(`/pengguna`, form));
         await fetchData();
-        makeToast("success", "Berhasil menambahkan pelanggan");
+        makeToast("success", "Berhasil menambahkan pengguna");
       }
-      setIsOpen(false);
-      setForm(initPelangganDTO);
+      setForm(initPenggunaDTO);
     } catch (error) {
       makeToast("error", error);
     } finally {
@@ -270,17 +313,31 @@ const usePelanggans = () => {
     try {
       if (!form.id) return;
       if (pending) return;
-      setPending(true);
-      makeToast("info");
-      await api.delete(`/pelanggan/${form.id}`);
+      setPending(true);      
+      await makeConfirm(async () => await api.delete(`/pengguna/${form.id}`));      
       await fetchData();
-      makeToast("success", "Berhasil menghapus pelanggan");
+      makeToast("success", "Berhasil menghapus pengguna");
     } catch (error) {
       makeToast("error", error);
     } finally {
       setPending(false);
     }
   };
+
+  const [perans, setPerans] = useState<Role[]>([]);
+
+  const fetchPerans = async () => {
+    try {
+      const res = await api.get<Api<Role[]>>("/peran");
+      setPerans(res.data.data);
+    } catch (error) {
+      makeToast("error", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPerans();
+  }, []);
 
   return {
     filteredData,
@@ -295,7 +352,9 @@ const usePelanggans = () => {
     setForm,
     handleSubmit,
     handleDelete,
+    onChangePeran,
+    perans,
   };
 };
 
-export default PelangganPage;
+export default PenggunaPage;

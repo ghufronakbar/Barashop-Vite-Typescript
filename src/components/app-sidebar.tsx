@@ -16,6 +16,7 @@ import {
   Lock,
   HistoryIcon,
   MessageCircleIcon,
+  Subtitles,
 } from "lucide-react";
 
 import {
@@ -33,8 +34,24 @@ import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { APP_NAME } from "@/constant";
 import { Link } from "react-router-dom";
 import { PROFILE } from "@/constant/image";
-import { useAuth } from "@/context/auth-context";
+import { Role, useAuth } from "@/context/auth-context";
 import { Badge } from "./ui/badge";
+
+export type AuthPage =
+  | "ringkasan"
+  | "laporan"
+  | "informasi"
+  | "kirim_pesan"
+  | "pengguna"
+  | "peran"
+  | "pelanggan"
+  | "produk"
+  | "pemasok"
+  | "riwayat_pesanan"
+  | "pembelian"
+  | "cacat_produk"
+  | "kasir"
+  | "all";
 
 interface SidebarMenu {
   title: string;
@@ -44,6 +61,7 @@ interface SidebarMenu {
 interface SidebarMenuItem {
   title: string;
   url: string;
+  auth: AuthPage;
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
@@ -56,22 +74,49 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Ringkasan",
         url: "/ringkasan",
+        auth: "ringkasan",
         icon: Home,
       },
       {
         title: "Laporan",
         url: "/laporan",
+        auth: "laporan",
         icon: Calendar,
       },
       {
         title: "Informasi Pembayaran",
         url: "/informasi-pembayaran",
+        auth: "informasi",
         icon: Info,
       },
       {
         title: "Kirim Pesan",
         url: "/kirim-pesan",
+        auth: "kirim_pesan",
         icon: MessageCircleIcon,
+      },
+    ],
+  },
+  {
+    title: "Sistem",
+    items: [
+      {
+        title: "Pengguna",
+        url: "/pengguna",
+        auth: "pengguna",
+        icon: User,
+      },
+      {
+        title: "Peran / Role",
+        url: "/peran",
+        auth: "peran",
+        icon: Subtitles,
+      },
+      {
+        title: "Pelanggan",
+        url: "/pelanggan",
+        auth: "pelanggan",
+        icon: Users,
       },
     ],
   },
@@ -81,22 +126,14 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Produk",
         url: "/produk",
+        auth: "produk",
         icon: Box,
       },
       {
         title: "Pemasok",
         url: "/pemasok",
+        auth: "pemasok",
         icon: Factory,
-      },
-      {
-        title: "Pengguna",
-        url: "/pengguna",
-        icon: User,
-      },
-      {
-        title: "Pelanggan",
-        url: "/pelanggan",
-        icon: Users,
       },
     ],
   },
@@ -106,21 +143,25 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Riwayat Pesanan",
         url: "/pesanan",
+        auth: "riwayat_pesanan",
         icon: History,
       },
       {
         title: "Pembelian",
         url: "/pembelian-produk",
+        auth: "pembelian",
         icon: ShoppingBag,
       },
       {
         title: "Cacat Produk",
         url: "/cacat-produk",
+        auth: "cacat_produk",
         icon: ShieldAlert,
       },
       {
         title: "Kasir",
         url: "/kasir",
+        auth: "kasir",
         icon: ShoppingCart,
       },
     ],
@@ -131,21 +172,25 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Akun",
         url: "/akun",
+        auth: "all",
         icon: CircleUserRound,
       },
       {
         title: "Log Aktivitas",
         url: "/log-aktivitas",
+        auth: "all",
         icon: HistoryIcon,
       },
       {
         title: "Privasi",
         url: "/privasi",
+        auth: "all",
         icon: Lock,
       },
       {
         title: "Logout",
         url: "/logout",
+        auth: "all",
         icon: LogOut,
       },
     ],
@@ -154,6 +199,14 @@ const SIDEBAR_MENU: SidebarMenu[] = [
 
 export function AppSidebar() {
   const { user } = useAuth();
+
+  const filteredSidebarMenu = SIDEBAR_MENU.map((menu) => ({
+    ...menu,
+    items: menu.items.filter((item) => {
+      if (item.auth === "all") return true;
+      return user?.peran[item.auth as keyof Role];
+    }),
+  })).filter((menu) => menu.items.length > 0);
   return (
     <Sidebar>
       <SidebarHeader className="">
@@ -171,13 +224,13 @@ export function AppSidebar() {
               {user?.email}
             </div>
             <Badge className="font-normal text-2xs line-clamp-1 mt-1">
-              {user?.peran}
+              {user?.peran?.nama}
             </Badge>
           </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
-        {SIDEBAR_MENU.map((item, index) => (
+        {filteredSidebarMenu.map((item, index) => (
           <SidebarGroup key={index}>
             <SidebarGroupLabel className="font-semibold">
               {item.title}

@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { makeConfirm } from "@/helper/makeConfirm";
 
 const PembelianProdukPage = () => {
   const {
@@ -337,11 +338,17 @@ const usePembelianProduks = () => {
       setPending(true);
       makeToast("info");
       if (form.id) {
-        await api.put(`/pembelian-produk/${form.id}`, form);
+        setIsOpen(false);
+        await makeConfirm(
+          async () => await api.put(`/pembelian-produk/${form.id}`, form)
+        );
         await fetchData();
         makeToast("success", "Berhasil mengedit data pembelian produk");
       } else {
-        await api.post("/pembelian-produk", form);
+        setIsOpen(false);
+        await makeConfirm(
+          async () => await api.post("/pembelian-produk", form)
+        );
         await fetchData();
         makeToast("success", "Berhasil menambahkan data pembelian produk");
       }
@@ -360,7 +367,9 @@ const usePembelianProduks = () => {
       if (pending) return;
       setPending(true);
       makeToast("info");
-      await api.delete(`/pembelian-produk/${form.id}`);
+      await makeConfirm(
+        async () => await api.delete(`/pembelian-produk/${form.id}`)
+      );
       await fetchData();
       makeToast("success", "Berhasil menghapus data pembelian produk");
     } catch (error) {

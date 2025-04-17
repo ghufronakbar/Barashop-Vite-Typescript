@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DashboardLayout } from "@/components/ui/layout/dashboard-layout";
 import { api } from "@/config/api";
+import { makeConfirm } from "@/helper/makeConfirm";
 import { makeToast } from "@/helper/makeToast";
 import { Api } from "@/model/Api";
 import { InformasiPembayaran } from "@/model/Informasi";
@@ -105,8 +106,7 @@ const useInformasi = () => {
     try {
       if (pending || !data) return;
       setPending(true);
-      makeToast("info");
-      await api.post("/informasi", data);
+      await makeConfirm(async () => await api.put("/informasi", data));      
       makeToast("success", "Berhasil mengedit informasi pembayaran");
     } catch (error) {
       makeToast("error", error);

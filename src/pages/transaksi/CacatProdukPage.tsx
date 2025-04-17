@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { makeConfirm } from "@/helper/makeConfirm";
 
 const CacatProdukPage = () => {
   const {
@@ -295,11 +296,13 @@ const useCacatProduks = () => {
       setPending(true);
       makeToast("info");
       if (form.id) {
-        await api.put(`/cacat-produk/${form.id}`, form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.put(`/cacat-produk/${form.id}`, form));        
         await Promise.all([fetchData(), fetchProduks()]);
         makeToast("success", "Berhasil mengedit data cacat produk");
       } else {
-        await api.post("/cacat-produk", form);
+        setIsOpen(false);
+        await makeConfirm(async () => await api.post("/cacat-produk", form));        
         await Promise.all([fetchData(), fetchProduks()]);
         makeToast("success", "Berhasil menambahkan data cacat produk");
       }
@@ -317,8 +320,7 @@ const useCacatProduks = () => {
       if (!form.id) return;
       if (pending) return;
       setPending(true);
-      makeToast("info");
-      await api.delete(`/cacat-produk/${form.id}`);
+      await makeConfirm(async () => await api.delete(`/cacat-produk/${form.id}`));      
       await Promise.all([fetchData(), fetchProduks()]);
       makeToast("success", "Berhasil menghapus data cacat produk");
     } catch (error) {

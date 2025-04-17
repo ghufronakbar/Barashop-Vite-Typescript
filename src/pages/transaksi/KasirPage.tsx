@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/config/api";
 import { PLACEHOLDER } from "@/constant/image";
 import formatRupiah from "@/helper/formatRupiah";
+import { makeConfirm } from "@/helper/makeConfirm";
 import { makeToast } from "@/helper/makeToast";
 import useDebounce from "@/hooks/use-debounce";
 import { Api } from "@/model/Api";
@@ -477,16 +478,24 @@ const useKasir = () => {
         kode: pelanggan && form.kode ? pelanggan.kode : null,
         item_pesanan: items,
       };
-      const res = await api.post<Api<Pesanan>>("/pesanan", request);
+      const res = await makeConfirm(
+        async () => await api.post<Api<Pesanan>>("/pesanan", request)
+      );
       makeToast("success", res?.data?.message);
-      if (res.data?.data?.transaksi?.url_redirect) {
-        navigate(`/payment/${res.data.data.id}`);
+      if (res?.data?.data?.transaksi?.url_redirect) {
+        navigate(`/payment/${res?.data.data.id}`);
       }
+      resetState();
     } catch (error) {
       makeToast("error", error);
     } finally {
       setPending(false);
     }
+  };
+
+  const resetState = () => {
+    setForm(initPesananDTO);
+    setItems([]);
   };
 
   const subTotal = items.reduce(

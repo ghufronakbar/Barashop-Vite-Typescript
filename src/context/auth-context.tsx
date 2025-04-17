@@ -13,7 +13,28 @@ import { AxiosError } from "axios";
 import { APP_NAME } from "@/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export type Role = "Admin" | "Owner" | "ManagerOperational" | "Cashier";
+export interface Role {
+  id: string;
+  nama: string;
+
+  ringkasan: boolean;
+  laporan: boolean;
+  informasi: boolean;
+  kirim_pesan: boolean;
+  pengguna: boolean;
+  peran: boolean;
+  pelanggan: boolean;
+  produk: boolean;
+  pemasok: boolean;
+  riwayat_pesanan: boolean;
+  pembelian: boolean;
+  cacat_produk: boolean;
+  kasir: boolean;
+
+  is_deleted: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
 
 export interface Decoded {
   id: string;
