@@ -106,7 +106,7 @@ const useLogin = () => {
       makeToast("success", res?.data?.message);
       Cookies.set("ACCESS_TOKEN", res.data.data.token);
       updateProfile(res.data.data);
-      navigate("/ringkasan");
+      navigate("/akun");
     } catch (error) {
       makeToast("error", error);
     } finally {

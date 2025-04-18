@@ -49,7 +49,7 @@ function App() {
             <Route path="/cacat-produk" element={<AuthPage component={CacatProdukPage} auth="cacat_produk" />} />
             <Route path="/pesanan" element={<AuthPage component={PesananPage} auth="riwayat_pesanan" />} />
             <Route path="/kasir" element={<AuthPage component={KasirPage} auth="kasir" />} />
-            <Route path="/payment/:id" element={<AuthPage component={PaymentPage} auth="kasir" />} />
+            <Route path="/payment/:id" element={<AuthPage component={PaymentPage} auth="all" />} />
 
             <Route path="/akun" element={<AuthPage component={AkunPage} auth="all" />} />
             <Route path="/privasi" element={<AuthPage component={PrivasiPage} auth="all" />} />

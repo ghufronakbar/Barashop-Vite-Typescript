@@ -63,6 +63,11 @@ const KasirPage = () => {
     tax,
     total,
     handleSubmit,
+    isCreateNew,
+    name,
+    onCreateMember,
+    setIsCreateNew,
+    setName,
   } = useKasir();
   return (
     <DashboardLayout
@@ -197,7 +202,7 @@ const KasirPage = () => {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <Label>Member</Label>
+              <Label>{isCreateNew ? "Nomor Telepon / Email" : "Member"}</Label>
               <Input
                 placeholder="6285123456789"
                 value={form.kode || ""}
@@ -208,16 +213,49 @@ const KasirPage = () => {
                   setForm({ ...form, kode: e.target.value });
                 }}
               />
-              <div className="text-xs">
-                {fetching && form.kode
-                  ? "Sedang mencari pelanggan"
-                  : pelanggan && form.kode
-                  ? pelanggan.nama
-                  : !form.kode
-                  ? ""
-                  : "Tidak terdaftar"}
-              </div>
+              {!isCreateNew && fetching && form.kode && (
+                <div className="text-xs">
+                  {fetching && form.kode
+                    ? "Sedang mencari pelanggan"
+                    : pelanggan && form.kode
+                    ? pelanggan.nama
+                    : !form.kode
+                    ? ""
+                    : "Tidak terdaftar"}
+                </div>
+              )}
             </div>
+            {isCreateNew && (
+              <div className="flex flex-col gap-2">
+                <Label>Nama</Label>
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Eren Yeager"
+                />
+              </div>
+            )}
+            {!isCreateNew ? (
+              <Button
+                onClick={() => setIsCreateNew(true)}
+                className="w-1/2 self-end"
+              >
+                Daftar Pelanggan Baru
+              </Button>
+            ) : (
+              <div className="flex flex-row gap-2 w-full">
+                <Button
+                  variant="destructive"
+                  onClick={() => setIsCreateNew(false)}
+                  className="w-1/2"
+                >
+                  Batal
+                </Button>
+                <Button onClick={() => onCreateMember()} className="w-1/2">
+                  Daftar
+                </Button>
+              </div>
+            )}
             <div className="flex flex-col gap-2">
               <Label>Deskripsi</Label>
               <Textarea
@@ -371,7 +409,7 @@ const useKasir = () => {
 
   useDebounce(
     () => {
-      if (form.kode) {
+      if (form.kode && !isCreateNew) {
         fetchPelanggan();
       }
     },
@@ -471,13 +509,13 @@ const useKasir = () => {
       }
       if (pending || fetching) return;
       setPending(true);
-      makeToast("info");
       const request = {
         metode: form.metode,
         deskripsi: form.deskripsi,
         kode: pelanggan && form.kode ? pelanggan.kode : null,
         item_pesanan: items,
       };
+      setIsOpen(false);
       const res = await makeConfirm(
         async () => await api.post<Api<Pesanan>>("/pesanan", request)
       );
@@ -502,6 +540,45 @@ const useKasir = () => {
     (_, item) => item.produk_harga * item.jumlah,
     0
   );
+
+  const [isCreateNew, setIsCreateNew] = useState(false);
+  const [name, setName] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  const onCreateMember = async () => {
+    try {
+      if (creating) return;
+      if (!name || name.length < 3) {
+        return makeToast("error", "Nama minimal 3 karakter");
+      }
+      if (!form.kode) {
+        return makeToast("error", "Email / No telepon tidak boleh kosong");
+      }
+      if (
+        !/^(62\d{8,}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(
+          form.kode
+        )
+      ) {
+        return makeToast(
+          "error",
+          "Harus berupa email atau no telepon berawal 62"
+        );
+      }
+      makeToast("info");
+      setCreating(true);
+      const res = await api.post<Api<Pelanggan>>(`/pelanggan`, {
+        kode: form.kode,
+        nama: name,
+      });
+      makeToast("success", res?.data?.message);
+      setIsCreateNew(false);
+      await fetchPelanggan();
+    } catch (error) {
+      makeToast("error", error);
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const percentageDisc = pelanggan ? informasi?.diskon : 0;
 
@@ -537,6 +614,11 @@ const useKasir = () => {
     tax,
     total,
     handleSubmit,
+    isCreateNew,
+    setIsCreateNew,
+    name,
+    setName,
+    onCreateMember,
   };
 };
 
