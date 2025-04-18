@@ -173,8 +173,10 @@ AkunPage.auth = true;
 const useAkun = () => {
   const [data, setData] = useState<Pengguna>();
   const [pending, setPending] = useState(false);
-  const [logs, setLogs] = useState<LogAksi[]>([]);
+  const [l, setLogs] = useState<LogAksi[]>([]);
   const [selected, setSelected] = useState<LogAksi | null>(null);
+
+  const logs = l.filter((log) => log.user_id === data?.id);
 
   const { updateProfile } = useAuth();
 
