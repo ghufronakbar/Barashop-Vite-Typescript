@@ -11,9 +11,9 @@ interface AuthPageProps {
 const AuthPage: React.FC<AuthPageProps> = ({ component: Component, auth }) => {
   const { user } = useAuth();
   const nav = useNavigate();
-  if (user) {
+  if (user || auth === "all") {
     if (auth === "all") return <Component />;
-    if (user.peran[auth]) {
+    if (user?.peran[auth]) {
       return <Component />;
     } else {
       makeToast("warning", "Anda tidak memiliki akses ke halaman ini");

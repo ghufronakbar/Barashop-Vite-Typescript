@@ -23,6 +23,7 @@ import KasirPage from "./pages/transaksi/KasirPage";
 import PaymentPage from "./pages/transaksi/PaymentPage";
 import PeranPage from "./pages/sistem/PeranPage";
 import AuthPage from "./hoc/AuthPage";
+import LaporanPage from "./pages/dashboard/LaporanPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             <Route path="/ringkasan" element={<AuthPage component={RingkasanPage} auth="ringkasan" />} />
+            <Route path="/laporan" element={<AuthPage component={LaporanPage} auth="ringkasan" />} />
             <Route path="/kirim-pesan" element={<AuthPage component={KirimPesanPage} auth="kirim_pesan" />} />
             <Route path="/informasi-pembayaran" element={<AuthPage component={InformasiPembayaranPage} auth="informasi" />} />
 
