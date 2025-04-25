@@ -106,7 +106,7 @@ const useInformasi = () => {
     try {
       if (pending || !data) return;
       setPending(true);
-      await makeConfirm(async () => await api.put("/informasi", data));      
+      await makeConfirm(async () => await api.post("/informasi", data));      
       makeToast("success", "Berhasil mengedit informasi pembayaran");
     } catch (error) {
       makeToast("error", error);
