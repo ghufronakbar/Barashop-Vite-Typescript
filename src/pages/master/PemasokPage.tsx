@@ -177,6 +177,10 @@ const PemasokPage = () => {
                   value={form.telepon}
                   onChange={(e) => onChange(e, "telepon")}
                   type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 />
               </div>
             </div>

@@ -178,6 +178,10 @@ const CacatProdukPage = () => {
                   value={form.jumlah}
                   onChange={(e) => onChange(e, "jumlah")}
                   type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 />
                 {form.produk_id && (
                   <div className="flex flex-col">

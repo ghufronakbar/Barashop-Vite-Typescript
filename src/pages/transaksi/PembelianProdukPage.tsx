@@ -201,6 +201,10 @@ const PembelianProdukPage = () => {
                   value={form.jumlah}
                   onChange={(e) => onChange(e, "jumlah")}
                   type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -210,6 +214,10 @@ const PembelianProdukPage = () => {
                   value={form.total}
                   onChange={(e) => onChange(e, "total")}
                   type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -218,6 +226,10 @@ const PembelianProdukPage = () => {
                   placeholder="0"
                   value={form.total / form.jumlah}
                   type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                   disabled
                 />
                 <span className="text-xs text-neutral-500">

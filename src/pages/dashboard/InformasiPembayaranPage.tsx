@@ -32,6 +32,10 @@ const InformasiPembayaranPage = () => {
                 placeholder="Loading.."
                 onChange={(e) => onChange(e, "diskon")}
                 type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 className="appearance-none -moz-appearance-none -webkit-appearance-none"
               />
               <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-300 h-full px-4 flex items-center justify-center rounded-r-md font-medium">
@@ -47,6 +51,10 @@ const InformasiPembayaranPage = () => {
                 placeholder="Loading.."
                 onChange={(e) => onChange(e, "pajak")}
                 type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
               />
               <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-300 h-full px-4 flex items-center justify-center rounded-r-md font-medium">
                 %

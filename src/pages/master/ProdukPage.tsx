@@ -183,6 +183,10 @@ const ProdukPage = () => {
                   value={form.harga}
                   onChange={(e) => onChange(e, "harga")}
                   type="number"
+                  onKeyDown={(evt) =>
+                    ["e", "E", "+", "-"].includes(evt.key) &&
+                    evt.preventDefault()
+                  }
                 />
               </div>
               <div className="flex flex-col gap-2">
