@@ -378,10 +378,10 @@ const usePerans = () => {
       const res = await api.get<Api<Pengguna>>("/akun");
       updateProfile({
         email: res.data.data.email,
-        gambar: res.data.data.foto_profil,
-        nama: res.data.data.nama_pengguna,
+        foto_profil: res.data.data.foto_profil,
+        nama_pengguna: res.data.data.nama_pengguna,
         peran: res.data.data.peran,
-        id: res.data.data.user_id,
+        user_id: res.data.data.user_id,
       } as Decoded);
     } catch (error) {
       makeToast("error", error);

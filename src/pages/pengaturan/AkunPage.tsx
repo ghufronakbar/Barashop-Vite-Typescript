@@ -83,7 +83,11 @@ const AkunPage = () => {
           </div>
           <div className="flex flex-col gap-2 w-full">
             <Label>Jabatan / Peran</Label>
-            <Input value={data?.peran?.nama_peran} placeholder="Loading.." disabled />
+            <Input
+              value={data?.peran?.nama_peran}
+              placeholder="Loading.."
+              disabled
+            />
           </div>
         </div>
         <div className="border-input w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 max-h-[80vh] overflow-auto">
@@ -91,10 +95,10 @@ const AkunPage = () => {
           <div className="flex flex-col gap-2">
             {logs.map((log) => (
               <div
-                key={log.id}
+                key={log.log_aksi_id}
                 className="flex flex-col gap-2 border-b border-gray-200 py-2"
               >
-                <p className="text-sm">{log.deskripsi}</p>
+                <p className="text-sm">{log.deskripsi_aksi}</p>
                 <div className="flex items-end justify-between">
                   <p className="text-sm text-gray-500">
                     {formatDate(log.created_at, true, true)}
@@ -112,7 +116,7 @@ const AkunPage = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Detail Log Aksi</DialogTitle>
-            <DialogDescription>{selected?.deskripsi}</DialogDescription>
+            <DialogDescription>{selected?.deskripsi_aksi}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 overflow-scroll">
             <div className="flex flex-col gap-2">
@@ -131,17 +135,11 @@ const AkunPage = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="font-medium">ID Data</TableCell>
-                  <TableCell className="text-right">
-                    {selected?.referensi_id}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
                   <TableCell className="font-medium">Aksi</TableCell>
                   <TableCell className="text-right">
-                    {selected?.aksi === "Create"
+                    {selected?.jenis_aksi === "Create"
                       ? "Tambah"
-                      : selected?.aksi === "Delete"
+                      : selected?.jenis_aksi === "Delete"
                       ? "Hapus"
                       : "Ubah"}
                   </TableCell>
@@ -156,7 +154,7 @@ const AkunPage = () => {
             </div>
             <div className="flex flex-col gap-2 overflow-auto">
               <h4>Detail</h4>
-              <JSONPretty data={selected?.detail} />
+              <JSONPretty data={selected?.detail_aksi} />
             </div>
           </div>
           <DialogFooter>
@@ -241,10 +239,10 @@ const useAkun = () => {
       const res = await api.put<Api<Pengguna>>("/akun", data);
       updateProfile({
         email: res.data.data.email,
-        gambar: res.data.data.foto_profil,
-        nama: res.data.data.nama_pengguna,
+        foto_profil: res.data.data.foto_profil,
+        nama_pengguna: res.data.data.nama_pengguna,
         peran: res.data.data.peran,
-        id: res.data.data.user_id,
+        user_id: res.data.data.user_id,
       } as Decoded);
       await fetchData();
       makeToast("success", "Berhasil mengedit akun");

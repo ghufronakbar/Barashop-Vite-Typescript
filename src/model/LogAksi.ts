@@ -1,14 +1,13 @@
 import { Pengguna } from "./Pengguna";
 
 export interface LogAksi {
-  id: string;
-  deskripsi: string;
-  referensi_id: string;
+  log_aksi_id: string;
+  deskripsi_aksi: string;  
   model_referensi: string;
-  aksi: "Create" | "Update" | "Delete";
+  jenis_aksi: "Create" | "Update" | "Delete";
   user_id: string;
   is_deleted: boolean;
-  detail: JSONValue;
+  detail_aksi: JSONValue;
   created_at: Date;
   updated_at: Date;
   user: Pengguna;

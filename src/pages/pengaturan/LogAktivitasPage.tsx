@@ -31,16 +31,16 @@ const LogAktivitasPage = () => {
           <div className="flex flex-col gap-2">
             {filteredData.map((item) => (
               <div
-                key={item.id}
+                key={item.log_aksi_id}
                 className="flex flex-col gap-2 border-b border-gray-200 py-2"
               >
-                <p className="text-sm">{item.deskripsi}</p>
+                <p className="text-sm">{item.deskripsi_aksi}</p>
                 <div className="flex items-end justify-between">
                   <p className="text-sm text-gray-500">
                     {formatDate(item.created_at, true, true)}
                   </p>
                   <Button
-                    variant={isSelected(item.id) ? "default" : "secondary"}
+                    variant={isSelected(item.log_aksi_id) ? "default" : "secondary"}
                     onClick={() => onClickItem(item)}
                   >
                     Detail
@@ -71,9 +71,9 @@ const LogAktivitasPage = () => {
                   <TableRow>
                     <TableCell className="font-medium">Aksi</TableCell>
                     <TableCell className="text-right">
-                      {selected?.aksi === "Create"
+                      {selected?.jenis_aksi === "Create"
                         ? "Tambah"
-                        : selected?.aksi === "Delete"
+                        : selected?.jenis_aksi === "Delete"
                         ? "Hapus"
                         : "Ubah"}
                     </TableCell>
@@ -87,7 +87,7 @@ const LogAktivitasPage = () => {
                 </Table>
               </div>
               <div className="flex flex-col gap-2 overflow-auto">
-                <JSONPretty data={selected?.detail} />
+                <JSONPretty data={selected?.detail_aksi} />
               </div>
             </div>
           ) : (
@@ -109,10 +109,10 @@ const useLogAktivitas = () => {
 
   const filteredData = data.filter(
     (item) =>
-      item.deskripsi.toLowerCase().includes(search.toLowerCase()) ||
+      item.deskripsi_aksi.toLowerCase().includes(search.toLowerCase()) ||
       item.model_referensi.toLowerCase().includes(search.toLowerCase()) ||
       item.user?.nama_pengguna.toLowerCase().includes(search.toLowerCase()) ||
-      item.aksi.toLowerCase().includes(search.toLowerCase())
+      item.jenis_aksi.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchLogs = async () => {
@@ -129,7 +129,7 @@ const useLogAktivitas = () => {
   };
 
   const onClickItem = (item: LogAksi | null) => {
-    if (isSelected(item?.id)) {
+    if (isSelected(item?.log_aksi_id)) {
       setSelected(null);
     } else {
       setSelected(item);
@@ -140,7 +140,7 @@ const useLogAktivitas = () => {
     fetchLogs();
   }, []);
 
-  const isSelected = (id?: string) => selected?.id === id;
+  const isSelected = (id?: string) => selected?.log_aksi_id === id;
 
   return {
     filteredData,
