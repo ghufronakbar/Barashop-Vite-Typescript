@@ -35,22 +35,22 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-            <Route path="/ringkasan" element={<AuthPage component={RingkasanPage} auth="ringkasan" />} />
-            <Route path="/laporan" element={<AuthPage component={LaporanPage} auth="ringkasan" />} />
-            <Route path="/kirim-pesan" element={<AuthPage component={KirimPesanPage} auth="kirim_pesan" />} />
-            <Route path="/informasi-pembayaran" element={<AuthPage component={InformasiPembayaranPage} auth="informasi" />} />
+            <Route path="/ringkasan" element={<AuthPage component={RingkasanPage} auth="akses_ringkasan" />} />
+            <Route path="/laporan" element={<AuthPage component={LaporanPage} auth="akses_ringkasan" />} />
+            <Route path="/kirim-pesan" element={<AuthPage component={KirimPesanPage} auth="akses_kirim_pesan" />} />
+            <Route path="/informasi-pembayaran" element={<AuthPage component={InformasiPembayaranPage} auth="akses_informasi" />} />
 
-            <Route path="/pengguna" element={<AuthPage component={PenggunaPage} auth="pengguna" />} />
-            <Route path="/pelanggan" element={<AuthPage component={PelangganPage} auth="pelanggan" />} />
-            <Route path="/peran" element={<AuthPage component={PeranPage} auth="peran" />} />
+            <Route path="/pengguna" element={<AuthPage component={PenggunaPage} auth="akses_pengguna" />} />
+            <Route path="/pelanggan" element={<AuthPage component={PelangganPage} auth="akses_pelanggan" />} />
+            <Route path="/peran" element={<AuthPage component={PeranPage} auth="akses_peran" />} />
 
-            <Route path="/produk" element={<AuthPage component={ProdukPage} auth="produk" />} />
-            <Route path="/pemasok" element={<AuthPage component={PemasokPage} auth="pemasok" />} />
+            <Route path="/produk" element={<AuthPage component={ProdukPage} auth="akses_produk" />} />
+            <Route path="/pemasok" element={<AuthPage component={PemasokPage} auth="akses_pemasok" />} />
 
-            <Route path="/pembelian-produk" element={<AuthPage component={PembelianProdukPage} auth="pembelian" />} />
-            <Route path="/cacat-produk" element={<AuthPage component={CacatProdukPage} auth="cacat_produk" />} />
-            <Route path="/pesanan" element={<AuthPage component={PesananPage} auth="riwayat_pesanan" />} />
-            <Route path="/kasir" element={<AuthPage component={KasirPage} auth="kasir" />} />
+            <Route path="/pembelian-produk" element={<AuthPage component={PembelianProdukPage} auth="akses_pembelian" />} />
+            <Route path="/cacat-produk" element={<AuthPage component={CacatProdukPage} auth="akses_cacat_produk" />} />
+            <Route path="/pesanan" element={<AuthPage component={PesananPage} auth="akses_riwayat_pesanan" />} />
+            <Route path="/kasir" element={<AuthPage component={KasirPage} auth="akses_kasir" />} />
             <Route path="/payment/:id" element={<AuthPage component={PaymentPage} auth="all" />} />
 
             <Route path="/akun" element={<AuthPage component={AkunPage} auth="all" />} />

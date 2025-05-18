@@ -95,18 +95,18 @@ const PenggunaPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.user_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
-                    src={item.gambar || PROFILE}
+                    src={item.foto_profil || PROFILE}
                     alt=""
                     width={200}
                     height={200}
                     className="min-w-12 min-h-12 w-12 h-12 object-cover rounded-xl"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>
+                <TableCell className="font-medium">{item.nama_pengguna}</TableCell>
                 <TableCell className="flex flex-row items-center gap-2">
                   {item.email}
                   <Link to="mailto:${item.kode}" target="_blank">
@@ -114,7 +114,7 @@ const PenggunaPage = () => {
                   </Link>
                 </TableCell>
                 <TableCell className="font-medium">
-                  {item?.peran?.nama}
+                  {item?.peran?.nama_peran}
                 </TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
@@ -186,7 +186,7 @@ const PenggunaPage = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {perans.map((item) => (
-                      <SelectItem value={item.id}>{item.nama}</SelectItem>
+                      <SelectItem value={item.peran_id}>{item.nama_peran}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -225,10 +225,10 @@ const usePenggunas = () => {
 
   const onClickItem = (item: Pengguna, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      nama: item.nama,
+      id: item.user_id,
+      nama: item.nama_pengguna,
       email: item.email,
-      peran_id: item.peran.id,
+      peran_id: item.peran.peran_id,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -256,7 +256,7 @@ const usePenggunas = () => {
   };
 
   const filteredData = data.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
+    item.nama_pengguna.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {

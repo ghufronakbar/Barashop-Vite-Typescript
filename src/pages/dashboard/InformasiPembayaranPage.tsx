@@ -81,13 +81,18 @@ const InformasiPembayaranPage = () => {
 
 InformasiPembayaranPage.auth = true;
 
+interface InformasiDTO {
+  diskon: number;
+  pajak: number
+}
+
 const useInformasi = () => {
-  const [data, setData] = useState<InformasiPembayaran>();
+  const [data, setData] = useState<InformasiDTO>();
   const [pending, setPending] = useState(false);
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    key: "diskon" | "pajak"
+    key: keyof InformasiDTO
   ) => {
     if (data) {
       setData({
@@ -100,7 +105,10 @@ const useInformasi = () => {
   const fetchData = async () => {
     try {
       const res = await api.get<Api<InformasiPembayaran>>("/informasi");
-      setData(res.data.data);
+      setData({
+        diskon: res.data.data.persentase_diskon,
+        pajak: res.data.data.persentase_pajak
+      });
     } catch (error) {
       makeToast("error", error);
     }

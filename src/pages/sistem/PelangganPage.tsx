@@ -82,16 +82,16 @@ const PelangganPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.pelanggan_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>                
+                <TableCell className="font-medium">{item.nama_pelanggan}</TableCell>                
                 <TableCell className="flex flex-row items-center gap-2">
-                  {item.kode}
+                  {item.kode_pelanggan}
                   <Link
                     to={
                       item.jenis_kode === "Email"
-                        ? `mailto:${item.kode}`
-                        : `https://wa.me/${item.kode}`
+                        ? `mailto:${item.kode_pelanggan}`
+                        : `https://wa.me/${item.kode_pelanggan}`
                     }
                     target="_blank"
                   >
@@ -190,9 +190,9 @@ const usePelanggans = () => {
 
   const onClickItem = (item: Pelanggan, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      kode: item.kode,
-      nama: item.nama,
+      id: item.pelanggan_id,
+      kode: item.kode_pelanggan,
+      nama: item.nama_pelanggan,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -213,7 +213,7 @@ const usePelanggans = () => {
   };
 
   const filteredData = data.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
+    item.nama_pelanggan.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {

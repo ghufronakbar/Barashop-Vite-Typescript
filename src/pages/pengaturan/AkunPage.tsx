@@ -13,7 +13,7 @@ import { DashboardLayout } from "@/components/ui/layout/dashboard-layout";
 import { Table, TableCell, TableRow } from "@/components/ui/table";
 import { UploadImage } from "@/components/upload-image";
 import { api } from "@/config/api";
-import { Decoded, useAuth } from "@/context/auth-context";
+import { Decoded, Role, useAuth } from "@/context/auth-context";
 import formatDate from "@/helper/formatDate";
 import { makeToast } from "@/helper/makeToast";
 import { Api } from "@/model/Api";
@@ -83,7 +83,7 @@ const AkunPage = () => {
           </div>
           <div className="flex flex-col gap-2 w-full">
             <Label>Jabatan / Peran</Label>
-            <Input value={data?.peran?.nama} placeholder="Loading.." disabled />
+            <Input value={data?.peran?.nama_peran} placeholder="Loading.." disabled />
           </div>
         </div>
         <div className="border-input w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 max-h-[80vh] overflow-auto">
@@ -121,7 +121,7 @@ const AkunPage = () => {
                 <TableRow>
                   <TableCell className="font-medium">Pelaku</TableCell>
                   <TableCell className="text-right">
-                    {selected?.user?.nama}
+                    {selected?.user?.nama_pengguna}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -170,13 +170,21 @@ const AkunPage = () => {
 
 AkunPage.auth = true;
 
+interface AkunDTO {
+  user_id: string;
+  nama: string;
+  email: string;
+  gambar: string | null;
+  peran: Role;
+}
+
 const useAkun = () => {
-  const [data, setData] = useState<Pengguna>();
+  const [data, setData] = useState<AkunDTO>();
   const [pending, setPending] = useState(false);
   const [l, setLogs] = useState<LogAksi[]>([]);
   const [selected, setSelected] = useState<LogAksi | null>(null);
 
-  const logs = l.filter((log) => log.user_id === data?.id);
+  const logs = l.filter((log) => log.user_id === data?.user_id);
 
   const { updateProfile } = useAuth();
 
@@ -195,7 +203,13 @@ const useAkun = () => {
   const fetchData = async () => {
     try {
       const res = await api.get<Api<Pengguna>>("/akun");
-      setData(res.data.data);
+      setData({
+        email: res.data.data.email,
+        gambar: res.data.data.foto_profil,
+        nama: res.data.data.nama_pengguna,
+        user_id: res.data.data.user_id,
+        peran: res.data.data.peran,
+      });
     } catch (error) {
       makeToast("error", error);
     }
@@ -204,7 +218,7 @@ const useAkun = () => {
   const fetchLogs = async () => {
     try {
       const res = await api.get<Api<LogAksi[]>>("/log-aksi");
-      res.data.data.filter((log) => log.user_id === data?.id);
+      res.data.data.filter((log) => log.user_id === data?.user_id);
       setLogs(res.data.data);
     } catch (error) {
       makeToast("error", error);
@@ -227,10 +241,10 @@ const useAkun = () => {
       const res = await api.put<Api<Pengguna>>("/akun", data);
       updateProfile({
         email: res.data.data.email,
-        gambar: res.data.data.gambar,
-        nama: res.data.data.nama,
+        gambar: res.data.data.foto_profil,
+        nama: res.data.data.nama_pengguna,
         peran: res.data.data.peran,
-        id: res.data.data.id,
+        id: res.data.data.user_id,
       } as Decoded);
       await fetchData();
       makeToast("success", "Berhasil mengedit akun");

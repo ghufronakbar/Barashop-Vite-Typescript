@@ -13,22 +13,22 @@ import { APP_NAME } from "@/constant";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export interface Role {
-  id: string;
-  nama: string;
+  peran_id: string;
+  nama_peran: string;
 
-  ringkasan: boolean;
-  laporan: boolean;
-  informasi: boolean;
-  kirim_pesan: boolean;
-  pengguna: boolean;
-  peran: boolean;
-  pelanggan: boolean;
-  produk: boolean;
-  pemasok: boolean;
-  riwayat_pesanan: boolean;
-  pembelian: boolean;
-  cacat_produk: boolean;
-  kasir: boolean;
+  akses_ringkasan: boolean;
+  akses_laporan: boolean;
+  akses_informasi: boolean;
+  akses_kirim_pesan: boolean;
+  akses_pengguna: boolean;
+  akses_peran: boolean;
+  akses_pelanggan: boolean;
+  akses_produk: boolean;
+  akses_pemasok: boolean;
+  akses_riwayat_pesanan: boolean;
+  akses_pembelian: boolean;
+  akses_cacat_produk: boolean;
+  akses_kasir: boolean;
 
   is_deleted: boolean;
   created_at: Date;
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return res.data.data;
     } catch (error) {
       console.log(error);
-      makeToast("error", error);      
+      makeToast("error", error);
       return null;
     }
   };

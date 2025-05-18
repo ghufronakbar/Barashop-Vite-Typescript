@@ -92,22 +92,22 @@ const ProdukPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.foto_produk}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
-                    src={item.gambar || PLACEHOLDER}
+                    src={item.foto_produk || PLACEHOLDER}
                     alt=""
                     width={200}
                     height={200}
                     className="min-w-12 min-h-12 w-12 h-12 object-cover rounded-xl"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>
-                <TableCell>{item.kategori}</TableCell>
-                <TableCell>{formatRupiah(item.harga)}</TableCell>
+                <TableCell className="font-medium">{item.nama_produk}</TableCell>
+                <TableCell>{item.kategori_produk}</TableCell>
+                <TableCell>{formatRupiah(item.harga_produk)}</TableCell>
                 <TableCell>{formatRupiah(item.hpp)}</TableCell>
-                <TableCell>{item.jumlah}</TableCell>
+                <TableCell>{item.jumlah_stok}</TableCell>
                 <TableCell>{item.total_terjual}</TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
@@ -234,12 +234,12 @@ const useProduks = () => {
 
   const onClickItem = (item: Produk, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      harga: item.harga,
-      kategori: item.kategori,
-      nama: item.nama,
-      deskripsi: item.deskripsi,
-      gambar: item.gambar,
+      id: item.produk_id,
+      harga: item.harga_produk,
+      kategori: item.kategori_produk,
+      nama: item.nama_produk,
+      deskripsi: item.deskripsi_produk,
+      gambar: item.foto_produk,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -260,7 +260,7 @@ const useProduks = () => {
   };
 
   const filteredData = data.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
+    item.nama_produk.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {

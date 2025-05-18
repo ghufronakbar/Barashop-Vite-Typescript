@@ -78,9 +78,9 @@ const PeranPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.peran_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>
+                <TableCell className="font-medium">{item.nama_peran}</TableCell>
                 <TableCell>{item.users.length}</TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
@@ -312,21 +312,21 @@ const usePerans = () => {
 
   const onClickItem = (item: Peran, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      cacat_produk: item.cacat_produk,
-      kasir: item.kasir,
-      kirim_pesan: item.kirim_pesan,
-      laporan: item.laporan,
-      pelanggan: item.pelanggan,
-      pengguna: item.pengguna,
-      peran: item.peran,
-      produk: item.produk,
-      pemasok: item.pemasok,
-      riwayat_pesanan: item.riwayat_pesanan,
-      pembelian: item.pembelian,
-      ringkasan: item.ringkasan,
-      informasi: item.informasi,
-      nama: item.nama,
+      id: item.peran_id,
+      cacat_produk: item.akses_cacat_produk,
+      kasir: item.akses_kasir,
+      kirim_pesan: item.akses_kirim_pesan,
+      laporan: item.akses_laporan,
+      pelanggan: item.akses_pelanggan,
+      pengguna: item.akses_pengguna,
+      peran: item.akses_peran,
+      produk: item.akses_produk,
+      pemasok: item.akses_pemasok,
+      riwayat_pesanan: item.akses_riwayat_pesanan,
+      pembelian: item.akses_pembelian,
+      ringkasan: item.akses_ringkasan,
+      informasi: item.akses_informasi,
+      nama: item.nama_peran,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -357,7 +357,7 @@ const usePerans = () => {
   };
 
   const filteredData = data.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
+    item.nama_peran.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {
@@ -378,10 +378,10 @@ const usePerans = () => {
       const res = await api.get<Api<Pengguna>>("/akun");
       updateProfile({
         email: res.data.data.email,
-        gambar: res.data.data.gambar,
-        nama: res.data.data.nama,
+        gambar: res.data.data.foto_profil,
+        nama: res.data.data.nama_pengguna,
         peran: res.data.data.peran,
-        id: res.data.data.id,
+        id: res.data.data.user_id,
       } as Decoded);
     } catch (error) {
       makeToast("error", error);

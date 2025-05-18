@@ -38,19 +38,19 @@ import { Role, useAuth } from "@/context/auth-context";
 import { Badge } from "./ui/badge";
 
 export type AuthPageType =
-  | "ringkasan"
-  | "laporan"
-  | "informasi"
-  | "kirim_pesan"
-  | "pengguna"
-  | "peran"
-  | "pelanggan"
-  | "produk"
-  | "pemasok"
-  | "riwayat_pesanan"
-  | "pembelian"
-  | "cacat_produk"
-  | "kasir"
+  | "akses_ringkasan"
+  | "akses_laporan"
+  | "akses_informasi"
+  | "akses_kirim_pesan"
+  | "akses_pengguna"
+  | "akses_peran"
+  | "akses_pelanggan"
+  | "akses_produk"
+  | "akses_pemasok"
+  | "akses_riwayat_pesanan"
+  | "akses_pembelian"
+  | "akses_cacat_produk"
+  | "akses_kasir"
   | "all";
 
 interface SidebarMenu {
@@ -74,25 +74,25 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Ringkasan",
         url: "/ringkasan",
-        auth: "ringkasan",
+        auth: "akses_ringkasan",
         icon: Home,
       },
       {
         title: "Laporan",
         url: "/laporan",
-        auth: "laporan",
+        auth: "akses_laporan",
         icon: Calendar,
       },
       {
         title: "Informasi Pembayaran",
         url: "/informasi-pembayaran",
-        auth: "informasi",
+        auth: "akses_informasi",
         icon: Info,
       },
       {
         title: "Kirim Pesan",
         url: "/kirim-pesan",
-        auth: "kirim_pesan",
+        auth: "akses_kirim_pesan",
         icon: MessageCircleIcon,
       },
     ],
@@ -103,19 +103,19 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Pengguna",
         url: "/pengguna",
-        auth: "pengguna",
+        auth: "akses_pengguna",
         icon: User,
       },
       {
         title: "Peran / Role",
         url: "/peran",
-        auth: "peran",
+        auth: "akses_peran",
         icon: Subtitles,
       },
       {
         title: "Pelanggan",
         url: "/pelanggan",
-        auth: "pelanggan",
+        auth: "akses_pelanggan",
         icon: Users,
       },
     ],
@@ -126,13 +126,13 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Produk",
         url: "/produk",
-        auth: "produk",
+        auth: "akses_produk",
         icon: Box,
       },
       {
         title: "Pemasok",
         url: "/pemasok",
-        auth: "pemasok",
+        auth: "akses_pemasok",
         icon: Factory,
       },
     ],
@@ -143,25 +143,25 @@ const SIDEBAR_MENU: SidebarMenu[] = [
       {
         title: "Riwayat Pesanan",
         url: "/pesanan",
-        auth: "riwayat_pesanan",
+        auth: "akses_riwayat_pesanan",
         icon: History,
       },
       {
         title: "Pembelian",
         url: "/pembelian-produk",
-        auth: "pembelian",
+        auth: "akses_pembelian",
         icon: ShoppingBag,
       },
       {
         title: "Cacat Produk",
         url: "/cacat-produk",
-        auth: "cacat_produk",
+        auth: "akses_cacat_produk",
         icon: ShieldAlert,
       },
       {
         title: "Kasir",
         url: "/kasir",
-        auth: "kasir",
+        auth: "akses_kasir",
         icon: ShoppingCart,
       },
     ],
@@ -224,7 +224,7 @@ export function AppSidebar() {
               {user?.email}
             </div>
             <Badge className="font-normal text-2xs line-clamp-1 mt-1">
-              {user?.peran?.nama}
+              {user?.peran?.nama_peran}
             </Badge>
           </div>
         </div>

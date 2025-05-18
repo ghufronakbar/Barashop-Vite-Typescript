@@ -96,11 +96,11 @@ const CacatProdukPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.cacat_produk_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
-                    src={item?.produk?.gambar || PLACEHOLDER}
+                    src={item?.produk?.foto_produk || PLACEHOLDER}
                     alt=""
                     width={200}
                     height={200}
@@ -108,10 +108,10 @@ const CacatProdukPage = () => {
                   />
                 </TableCell>
                 <TableCell className="font-medium">
-                  {item?.produk?.nama}
+                  {item?.produk?.nama_produk}
                 </TableCell>
-                <TableCell>{item?.jumlah}</TableCell>
-                <TableCell className="max-w-[200px]">{item?.alasan}</TableCell>
+                <TableCell>{item?.jumlah_produk}</TableCell>
+                <TableCell className="max-w-[200px]">{item?.alasan_kerusakan}</TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
                   <Button
@@ -166,7 +166,7 @@ const CacatProdukPage = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {produks.map((item) => (
-                      <SelectItem value={item.id}>{item.nama}</SelectItem>
+                      <SelectItem value={item.produk_id}>{item.nama_produk}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -239,9 +239,9 @@ const useCacatProduks = () => {
 
   const onClickItem = (item: CacatProduk, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      alasan: item.alasan,
-      jumlah: item.jumlah,
+      id: item.cacat_produk_id,
+      alasan: item.alasan_kerusakan,
+      jumlah: item.jumlah_produk,
       produk_id: item.produk_id,
     });
     if (isEdit) setIsOpen(true);
@@ -270,7 +270,7 @@ const useCacatProduks = () => {
   };
 
   const filteredData = data.filter((item) =>
-    item.produk.nama.toLowerCase().includes(search.toLowerCase())
+    item.produk.nama_produk.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {
@@ -350,7 +350,7 @@ const useCacatProduks = () => {
   }, []);
 
   const currentProduk =
-    produks.find((item) => item.id === form.produk_id)?.jumlah || 0;
+    produks.find((item) => item.produk_id === form.produk_id)?.jumlah_stok || 0;
 
   return {
     filteredData,

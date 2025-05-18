@@ -105,21 +105,21 @@ const KasirPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {kat.produks.map((prod) => (
                     <div
-                      key={prod.id}
+                      key={prod.produk_id}
                       className="border-input rounded-md border bg-transparent p-4 text-base shadow-xs transition-[color,box-shadow] outline-none flex flex-col gap-4 overflow-auto w-full"
                     >
                       <img
-                        src={prod.gambar || PLACEHOLDER}
+                        src={prod.foto_produk || PLACEHOLDER}
                         width={600}
                         height={400}
                         className="w-full aspect-video rounded-xl drop-shadow-sm object-cover"
                       />
                       <div className="flex flex-col">
-                        <h2>{prod.nama}</h2>
-                        <p className="text-sm">{prod.kategori}</p>
-                        <p className="text-sm">{formatRupiah(prod.harga)}</p>
+                        <h2>{prod.nama_produk}</h2>
+                        <p className="text-sm">{prod.kategori_produk}</p>
+                        <p className="text-sm">{formatRupiah(prod.harga_produk)}</p>
                         <span className="text-xs text-gray-500">
-                          Stok : {prod.jumlah}
+                          Stok : {prod.jumlah_stok}
                         </span>
                       </div>
                       <Button onClick={() => onAddCart(prod)}>Tambah</Button>
@@ -218,7 +218,7 @@ const KasirPage = () => {
                   {fetching && form.kode
                     ? "Sedang mencari pelanggan"
                     : pelanggan && form.kode
-                    ? pelanggan.nama
+                    ? pelanggan.nama_pelanggan
                     : !form.kode
                     ? ""
                     : "Tidak terdaftar"}
@@ -367,9 +367,9 @@ const useKasir = () => {
   const [fetching, setFetching] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [informasi, setInformasi] = useState<InformasiPembayaran>({
-    id: "",
-    diskon: 0,
-    pajak: 0,
+    informasi_id: "",
+    persentase_diskon: 0,
+    persentase_pajak: 0,
     is_deleted: false,
     created_at: new Date(),
     updated_at: new Date(),
@@ -380,7 +380,7 @@ const useKasir = () => {
     (item) =>
       item.kategori.toLowerCase().includes(search.toLowerCase()) ||
       item.produks.some((p) =>
-        p.nama.toLowerCase().includes(search.toLowerCase())
+        p.nama_produk.toLowerCase().includes(search.toLowerCase())
       )
   );
 
@@ -421,10 +421,10 @@ const useKasir = () => {
     try {
       const res = await api.get<Api<Produk[]>>("/produk");
       const uniqueKategori = Array.from(
-        new Set(res.data.data.map((item) => item.kategori))
+        new Set(res.data.data.map((item) => item.kategori_produk))
       ).map((kategori) => ({
         kategori,
-        produks: res.data.data.filter((item) => item.kategori === kategori),
+        produks: res.data.data.filter((item) => item.kategori_produk === kategori),
       }));
       setData(uniqueKategori);
     } catch (error) {
@@ -433,30 +433,30 @@ const useKasir = () => {
   };
 
   const onAddCart = (item: Produk) => {
-    const isExist = items.find((i) => i.produk_id === item.id);
+    const isExist = items.find((i) => i.produk_id === item.produk_id);
 
-    if (item.jumlah < 1) {
+    if (item.jumlah_stok < 1) {
       return makeToast("error", "Stok produk tidak mencukupi");
     }
-    if (isExist && isExist.jumlah === item.jumlah) {
+    if (isExist && isExist.jumlah === item.jumlah_stok) {
       return makeToast("error", "Stok produk tidak mencukupi");
     }
 
     if (isExist) {
       setItems(
         items.map((i) =>
-          i.produk_id === item.id ? { ...i, jumlah: i.jumlah + 1 } : i
+          i.produk_id === item.produk_id ? { ...i, jumlah: i.jumlah + 1 } : i
         )
       );
     } else {
       setItems([
         ...items,
         {
-          produk_id: item.id,
-          produk_gambar: item.gambar,
-          produk_harga: item.harga,
-          produk_nama: item.nama,
-          produk_kategori: item.kategori,
+          produk_id: item.produk_id,
+          produk_gambar: item.foto_produk,
+          produk_harga: item.harga_produk,
+          produk_nama: item.nama_produk,
+          produk_kategori: item.kategori_produk,
           jumlah: 1,
         },
       ]);
@@ -465,9 +465,9 @@ const useKasir = () => {
 
   const onIncrease = (item: ItemPesananDTO) => {
     const flattedProduk = data.flatMap((item) => item.produks);
-    const isExist = flattedProduk.find((i) => i.id === item.produk_id);
+    const isExist = flattedProduk.find((i) => i.produk_id === item.produk_id);
 
-    if (isExist && isExist.jumlah === item.jumlah) {
+    if (isExist && isExist.jumlah_stok === item.jumlah) {
       return makeToast("error", "Stok produk tidak mencukupi");
     }
 
@@ -512,7 +512,7 @@ const useKasir = () => {
       const request = {
         metode: form.metode,
         deskripsi: form.deskripsi,
-        kode: pelanggan && form.kode ? pelanggan.kode : null,
+        kode: pelanggan && form.kode ? pelanggan.kode_pelanggan : null,
         item_pesanan: items,
       };
       setIsOpen(false);
@@ -520,8 +520,8 @@ const useKasir = () => {
         async () => await api.post<Api<Pesanan>>("/pesanan", request)
       );
       makeToast("success", res?.data?.message);
-      if (res?.data?.data?.transaksi?.url_redirect) {
-        navigate(`/payment/${res?.data.data.id}`);
+      if (res?.data?.data?.transaksi?.midtrans_url_redirect) {
+        navigate(`/payment/${res?.data.data.pesanan_id}`);
       }
       resetState();
     } catch (error) {
@@ -580,13 +580,13 @@ const useKasir = () => {
     }
   };
 
-  const percentageDisc = pelanggan ? informasi?.diskon : 0;
+  const percentageDisc = pelanggan ? informasi?.persentase_diskon : 0;
 
   const discount = subTotal * (percentageDisc / 100);
 
   const priceBeforeTax = subTotal - discount;
 
-  const percentageTax = informasi.pajak;
+  const percentageTax = informasi.persentase_pajak;
 
   const tax = priceBeforeTax * (percentageTax / 100);
 

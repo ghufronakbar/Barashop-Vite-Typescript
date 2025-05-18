@@ -59,7 +59,7 @@ const LogAktivitasPage = () => {
                   <TableRow>
                     <TableCell className="font-medium">Pelaku</TableCell>
                     <TableCell className="text-right">
-                      {selected?.user?.nama}
+                      {selected?.user?.nama_pengguna}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -67,13 +67,7 @@ const LogAktivitasPage = () => {
                     <TableCell className="text-right">
                       {selected?.model_referensi}
                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">ID Data</TableCell>
-                    <TableCell className="text-right">
-                      {selected?.referensi_id}
-                    </TableCell>
-                  </TableRow>
+                  </TableRow>                  
                   <TableRow>
                     <TableCell className="font-medium">Aksi</TableCell>
                     <TableCell className="text-right">
@@ -117,7 +111,7 @@ const useLogAktivitas = () => {
     (item) =>
       item.deskripsi.toLowerCase().includes(search.toLowerCase()) ||
       item.model_referensi.toLowerCase().includes(search.toLowerCase()) ||
-      item.user?.nama.toLowerCase().includes(search.toLowerCase()) ||
+      item.user?.nama_pengguna.toLowerCase().includes(search.toLowerCase()) ||
       item.aksi.toLowerCase().includes(search.toLowerCase())
   );
 

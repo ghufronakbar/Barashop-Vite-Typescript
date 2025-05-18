@@ -55,8 +55,8 @@ const usePayment = () => {
       setLoading(true);
       const res = await api.get<Api<Pesanan>>(`/pesanan/${id}`);
       setLoading(false);
-      const { url_redirect } = res.data.data.transaksi;
-      const snapToken = url_redirect?.split("/").pop() || "";
+      const { midtrans_url_redirect } = res.data.data.transaksi;
+      const snapToken = midtrans_url_redirect?.split("/").pop() || "";
       console.log({ snapToken });
       window?.snap?.pay(snapToken, {
         onSuccess: async () => {

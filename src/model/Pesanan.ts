@@ -2,12 +2,12 @@ import { Pelanggan } from "./Pelanggan";
 import { Produk } from "./Produk";
 
 export interface Pesanan {
-  id: string;
+  pesanan_id: string;
   total_akhir: number;
-  total_sementara: number;
-  diskon: number;
-  pajak: number;
-  deskripsi: string | null;
+  total_harga_barang: number;
+  diskon_dikenakan: number;
+  pajak_dikenakan: number;
+  deskripsi_pesanan: string | null;
   pelanggan_id: string | null;
   is_deleted: boolean;
   created_at: Date;
@@ -20,10 +20,10 @@ export interface Pesanan {
 }
 
 export interface ItemPesanan {
-  id: string;
-  jumlah: number;
-  harga: number;
-  total: number;
+  item_pesanan_id: string;
+  jumlah_barang: number;
+  harga_per_barang: number;
+  total_harga: number;
   pesanan_id: string;
   produk_id: string;
   is_deleted: boolean;
@@ -33,15 +33,15 @@ export interface ItemPesanan {
 }
 
 export interface Transaksi {
-  id: string;
-  jumlah: number;
-  metode: "VirtualAccountOrBank" | "Cash";
-  status: "Success" | "Pending";
-  snap_token: string | null;
-  url_redirect: string | null;
+  transaksi_id: string;
+  jumlah_pembayaran: number;
+  metode_pembayaran: "VirtualAccountOrBank" | "Cash";
+  status_pembayaran: "Success" | "Pending";
+  midtrans_snap_token: string | null;
+  midtrans_url_redirect: string | null;
   pesanan_id: string;
   is_deleted: boolean;
-  detail: unknown;
+  detail_transaksi: unknown;
   created_at: Date;
   updated_at: Date;
 }

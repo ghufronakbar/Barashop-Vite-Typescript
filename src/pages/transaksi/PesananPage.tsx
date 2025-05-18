@@ -73,11 +73,11 @@ const PesananPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.pesanan_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
-                    src={item?.item_pesanan?.[0]?.produk?.gambar || PLACEHOLDER}
+                    src={item?.item_pesanan?.[0]?.produk?.foto_produk || PLACEHOLDER}
                     alt=""
                     width={200}
                     height={200}
@@ -87,22 +87,22 @@ const PesananPage = () => {
                 <TableCell className="font-medium max-w-[300px] overflow-hidden">
                   {item?.item_pesanan
                     ?.map(
-                      (item) => item.produk?.nama + " x" + item.jumlah + " "
+                      (item) => item.produk?.nama_produk + " x" + item.jumlah_barang + " "
                     )
                     ?.join(", ")}
                   {item?.item_pesanan
                     ?.map(
-                      (item) => item.produk?.nama + " x" + item.jumlah + " "
+                      (item) => item.produk?.nama_produk + " x" + item.jumlah_barang + " "
                     )
                     ?.join(", ")}
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">
-                    {item?.pelanggan?.nama || "-"}
+                    {item?.pelanggan?.nama_pelanggan || "-"}
                   </div>
-                  <div className="text-sm">{item.pelanggan?.kode}</div>
+                  <div className="text-sm">{item.pelanggan?.kode_pelanggan}</div>
                 </TableCell>
-                <TableCell>{formatRupiah(item?.total_sementara)}</TableCell>
+                <TableCell>{formatRupiah(item?.total_harga_barang)}</TableCell>
                 <TableCell>{formatRupiah(item?.total_akhir)}</TableCell>
                 <TableCell>{formatDate(item.created_at, true, true)}</TableCell>
                 <TableCell>
@@ -119,7 +119,7 @@ const PesananPage = () => {
         <DialogContent className="overflow-hidden">
           <DialogHeader>
             <DialogTitle>Detail Pesanan</DialogTitle>
-            <DialogDescription>ID: #{selected?.id}</DialogDescription>
+            <DialogDescription>ID: #{selected?.pesanan_id}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 overflow-scroll h-[60vh]">
             <div className="flex flex-col gap-2">
@@ -128,7 +128,7 @@ const PesananPage = () => {
                 <TableRow>
                   <TableCell className="font-medium">Pelanggan</TableCell>
                   <TableCell className="text-right">
-                    {selected?.pelanggan?.nama || "Non Member"}
+                    {selected?.pelanggan?.nama_pelanggan || "Non Member"}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -142,13 +142,13 @@ const PesananPage = () => {
                     Metode Pembayaran
                   </TableCell>
                   <TableCell className="text-right">
-                    {selected?.transaksi?.metode}
+                    {selected?.transaksi?.metode_pembayaran}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Status</TableCell>
                   <TableCell className="text-right">
-                    {selected?.transaksi?.status}
+                    {selected?.transaksi?.status_pembayaran}
                   </TableCell>
                 </TableRow>
               </Table>
@@ -159,20 +159,20 @@ const PesananPage = () => {
                 <TableRow>
                   <TableCell className="font-medium">Subtotal</TableCell>
                   <TableCell className="text-right">
-                    {formatRupiah(selected?.total_sementara)}
+                    {formatRupiah(selected?.total_harga_barang)}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Diskon</TableCell>
                   <TableCell className="text-right">
-                    {formatRupiah(selected?.diskon)} (
+                    {formatRupiah(selected?.diskon_dikenakan)} (
                     {selected?.persentase_diskon}%)
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Pajak</TableCell>
                   <TableCell className="text-right">
-                    {formatRupiah(selected?.pajak)} (
+                    {formatRupiah(selected?.pajak_dikenakan)} (
                     {selected?.persentase_pajak}%)
                   </TableCell>
                 </TableRow>
@@ -196,35 +196,35 @@ const PesananPage = () => {
                   </TableRow>
                 </TableHeader>
                 {selected?.item_pesanan.map((item) => (
-                  <TableRow key={item.id}>
+                  <TableRow key={item.item_pesanan_id}>
                     <TableCell className="font-medium">
-                      {item?.produk?.nama}
+                      {item?.produk?.nama_produk}
                     </TableCell>
-                    <TableCell>{item?.jumlah}</TableCell>
-                    <TableCell>{formatRupiah(item?.harga)}</TableCell>
-                    <TableCell>{formatRupiah(item?.total)}</TableCell>
+                    <TableCell>{item?.jumlah_barang}</TableCell>
+                    <TableCell>{formatRupiah(item?.harga_per_barang)}</TableCell>
+                    <TableCell>{formatRupiah(item?.total_harga)}</TableCell>
                   </TableRow>
                 ))}
               </Table>
             </div>
-            {selected?.transaksi.metode === "VirtualAccountOrBank" &&
-              !!selected.transaksi.detail && (
+            {selected?.transaksi.metode_pembayaran === "VirtualAccountOrBank" &&
+              !!selected.transaksi.detail_transaksi && (
                 <div className="flex flex-col gap-2">
                   <h4>Detail Pembayaran</h4>
                   <div className="max-h-[30vh] overflow-scroll">
-                    <JSONPretty data={selected?.transaksi?.detail} />
+                    <JSONPretty data={selected?.transaksi?.detail_transaksi} />
                   </div>
                 </div>
               )}
           </div>
           <DialogFooter>
-            {selected?.transaksi.status === "Pending" && (
+            {selected?.transaksi.status_pembayaran === "Pending" && (
               <Button onClick={checkStatus} variant="secondary">
                 Cek Status
               </Button>
             )}
             {selected?.pelanggan &&
-              selected?.transaksi.status === "Success" && (
+              selected?.transaksi.status_pembayaran === "Success" && (
                 <Button onClick={sendNota} variant="secondary">
                   Kirim Nota
                 </Button>
@@ -248,10 +248,10 @@ const usePesanans = () => {
 
   const filteredData = data.filter(
     (item) =>
-      item.pelanggan?.nama.toLowerCase().includes(search.toLowerCase()) ||
-      item.deskripsi?.toLowerCase().includes(search.toLowerCase()) ||
+      item.pelanggan?.nama_pelanggan.toLowerCase().includes(search.toLowerCase()) ||
+      item.deskripsi_pesanan?.toLowerCase().includes(search.toLowerCase()) ||
       item.item_pesanan.some((item) =>
-        item.produk?.nama.toLowerCase().includes(search.toLowerCase())
+        item.produk?.nama_produk.toLowerCase().includes(search.toLowerCase())
       )
   );
 
@@ -273,7 +273,7 @@ const usePesanans = () => {
       if (!selected) return;
       makeToast("info", "Mengirim nota...");
       const res = await api.post<Api<Pesanan>>("/pesanan/nota", {
-        id: selected?.id,
+        id: selected?.pesanan_id,
       });
       makeToast("success", res?.data?.message);
     } catch (error) {
@@ -285,7 +285,7 @@ const usePesanans = () => {
     try {
       if (!selected) return;
       makeToast("info");
-      const res = await api.get<Api<Pesanan>>(`/pesanan/${selected?.id}`);
+      const res = await api.get<Api<Pesanan>>(`/pesanan/${selected?.pesanan_id}`);
       setSelected(res?.data?.data);
       await fetchData();
     } catch (error) {

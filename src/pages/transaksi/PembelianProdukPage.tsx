@@ -99,11 +99,11 @@ const PembelianProdukPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.pembelian_produk_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
-                    src={item?.produk?.gambar || PLACEHOLDER}
+                    src={item?.produk?.foto_produk || PLACEHOLDER}
                     alt=""
                     width={200}
                     height={200}
@@ -111,14 +111,14 @@ const PembelianProdukPage = () => {
                   />
                 </TableCell>
                 <TableCell className="font-medium">
-                  {item?.produk?.nama}
+                  {item?.produk?.nama_produk}
                 </TableCell>
                 <TableCell className="font-medium">
-                  {item?.pemasok?.nama}
+                  {item?.pemasok?.nama_pemasok}
                 </TableCell>
-                <TableCell>{item?.jumlah}</TableCell>
-                <TableCell>{formatRupiah(item?.harga)}</TableCell>
-                <TableCell>{formatRupiah(item?.total)}</TableCell>
+                <TableCell>{item?.jumlah_pembelian}</TableCell>
+                <TableCell>{formatRupiah(item?.harga_per_barang)}</TableCell>
+                <TableCell>{formatRupiah(item?.total_harga)}</TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
                   <Button
@@ -173,7 +173,7 @@ const PembelianProdukPage = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {produks.map((item) => (
-                      <SelectItem value={item.id}>{item.nama}</SelectItem>
+                      <SelectItem value={item.produk_id}>{item.nama_produk}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -189,7 +189,7 @@ const PembelianProdukPage = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {pemasoks.map((item) => (
-                      <SelectItem value={item.id}>{item.nama}</SelectItem>
+                      <SelectItem value={item.pemasok_id}>{item.nama_pemasok}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -281,12 +281,12 @@ const usePembelianProduks = () => {
 
   const onClickItem = (item: PembelianProduk, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      deskripsi: item.deskripsi,
-      jumlah: item.jumlah,
+      id: item.pembelian_produk_id,
+      deskripsi: item.deskripsi_pembelian,
+      jumlah: item.jumlah_pembelian,
       pemasok_id: item.pemasok_id,
       produk_id: item.produk_id,
-      total: item.total,
+      total: item.total_harga,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -315,8 +315,8 @@ const usePembelianProduks = () => {
 
   const filteredData = data.filter(
     (item) =>
-      item.produk.nama.toLowerCase().includes(search.toLowerCase()) ||
-      item.pemasok.nama.toLowerCase().includes(search.toLowerCase())
+      item.produk.nama_produk.toLowerCase().includes(search.toLowerCase()) ||
+      item.pemasok.nama_pemasok.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {

@@ -87,22 +87,22 @@ const PemasokPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.pemasok_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
-                    src={item.gambar || PLACEHOLDER}
+                    src={item.logo_pemasok || PLACEHOLDER}
                     alt=""
                     width={200}
                     height={200}
                     className="min-w-12 min-h-12 w-12 h-12 object-cover rounded-xl"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{item.nama}</TableCell>
-                <TableCell>{item.alamat}</TableCell>
+                <TableCell className="font-medium">{item.nama_pemasok}</TableCell>
+                <TableCell>{item.alamat_pemasok}</TableCell>
                 <TableCell className="flex flex-row items-center gap-2">
-                  {item.telepon}
-                  <Link to={`https://wa.me/${item.telepon}`} target="_blank">
+                  {item.telepon_pemasok}
+                  <Link to={`https://wa.me/${item.telepon_pemasok}`} target="_blank">
                     <ExternalLink className="w-4 h-4" />
                   </Link>
                 </TableCell>
@@ -219,11 +219,11 @@ const usePemasoks = () => {
 
   const onClickItem = (item: Pemasok, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      telepon: item.telepon,
-      alamat: item.alamat,
-      nama: item.nama,
-      gambar: item.gambar,
+      id: item.pemasok_id,
+      telepon: item.telepon_pemasok,
+      alamat: item.alamat_pemasok,
+      nama: item.nama_pemasok,
+      gambar: item.logo_pemasok,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -244,7 +244,7 @@ const usePemasoks = () => {
   };
 
   const filteredData = data.filter((item) =>
-    item.nama.toLowerCase().includes(search.toLowerCase())
+    item.nama_pemasok.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {
@@ -274,7 +274,9 @@ const usePemasoks = () => {
       setPending(true);
       if (form.id) {
         setIsOpen(false);
-        await makeConfirm(async () => await api.put(`/pemasok/${form.id}`, form));        
+        await makeConfirm(
+          async () => await api.put(`/pemasok/${form.id}`, form)
+        );
         await fetchData();
         makeToast("success", "Berhasil mengedit pemasok");
       } else {
@@ -296,7 +298,7 @@ const usePemasoks = () => {
       if (!form.id) return;
       if (pending) return;
       setPending(true);
-      await makeConfirm(async () => await api.delete(`/pemasok/${form.id}`));      
+      await makeConfirm(async () => await api.delete(`/pemasok/${form.id}`));
       await fetchData();
       makeToast("success", "Berhasil menghapus pemasok");
     } catch (error) {

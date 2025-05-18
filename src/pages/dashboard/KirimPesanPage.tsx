@@ -84,10 +84,10 @@ const KirimPesanPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.pesan_terkirim_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="font-medium">{item.subjek}</TableCell>
-                <TableCell>{item.user?.nama}</TableCell>
+                <TableCell className="font-medium">{item.subjek_pesan}</TableCell>
+                <TableCell>{item.user?.nama_pengguna}</TableCell>
                 <TableCell>{item.pelanggan_count}</TableCell>
                 <TableCell>{formatDate(item.created_at, true, true)}</TableCell>
                 <TableCell>
@@ -188,9 +188,9 @@ const useKirimPesans = () => {
 
   const onClickItem = (item: KirimPesan, isEdit?: boolean) => {
     setForm({
-      id: item.id,
-      subjek: item.subjek,
-      pesan: item.pesan,
+      id: item.pesan_terkirim_id,
+      subjek: item.subjek_pesan,
+      pesan: item.isi_pesan,
     });
     if (isEdit) setIsOpen(true);
   };
@@ -212,8 +212,8 @@ const useKirimPesans = () => {
 
   const filteredData = data.filter(
     (item) =>
-      item.subjek.toLowerCase().includes(search.toLowerCase()) ||
-      item.user?.nama.toLowerCase().includes(search.toLowerCase())
+      item.subjek_pesan.toLowerCase().includes(search.toLowerCase()) ||
+      item.user?.nama_pengguna.toLowerCase().includes(search.toLowerCase())
   );
 
   const fetchData = async () => {

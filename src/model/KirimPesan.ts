@@ -1,9 +1,9 @@
 import { Pengguna } from "./Pengguna";
 
 export interface KirimPesan {
-  id: string;
-  subjek: string;
-  pesan: string;
+  pesan_terkirim_id: string;
+  subjek_pesan: string;
+  isi_pesan: string;
   user_id: string;
   is_deleted: boolean;
   created_at: Date;

@@ -2,11 +2,11 @@ import { Pemasok } from "./Pemasok";
 import { Produk } from "./Produk";
 
 export interface PembelianProduk {
-  id: string;
-  jumlah: number;
-  harga: number;
-  total: number;
-  deskripsi: string;
+  pembelian_produk_id: string;
+  jumlah_pembelian: number;
+  harga_per_barang: number;
+  total_harga: number;
+  deskripsi_pembelian: string;
   produk_id: string;
   pemasok_id: string;
   is_deleted: boolean;
