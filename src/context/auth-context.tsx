@@ -36,11 +36,11 @@ export interface Role {
 }
 
 export interface Decoded {
-  id: string;
-  nama: string;
+  user_id: string;
+  nama_pengguna: string;
   email: string;
   peran: Role;
-  gambar: string | null;
+  foto_profil: string | null;
   token: string;
   iat: number;
   exp: number;

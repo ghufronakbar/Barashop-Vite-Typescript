@@ -212,14 +212,14 @@ export function AppSidebar() {
       <SidebarHeader className="">
         <div className="font-bold flex flex-row items-center text-lg gap-2 my-2 mx-auto overflow-hidden w-full">
           <img
-            src={user?.gambar || PROFILE}
+            src={user?.foto_profil || PROFILE}
             alt=""
             width={80}
             height={80}
             className="min-w-10 min-h-10 w-10 h-10 rounded-full object-cover"
           />
           <div className="flex flex-col">
-            <div className="font-medium text-sm line-clamp-1">{user?.nama}</div>
+            <div className="font-medium text-sm line-clamp-1">{user?.nama_pengguna}</div>
             <div className="font-normal text-xs line-clamp-1">
               {user?.email}
             </div>
