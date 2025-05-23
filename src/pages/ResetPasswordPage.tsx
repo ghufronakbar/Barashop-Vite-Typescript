@@ -27,7 +27,10 @@ const ResetPasswordPage = () => {
           <Label>Email</Label>
           <Input
             type="email"
-            placeholder={`example@${APP_NAME?.toLowerCase()}.com`}
+            placeholder={`example@${APP_NAME?.replace(
+              " ",
+              ""
+            ).toLowerCase()}.com`}
             value={form.email}
             onChange={(e) => onChange(e, "email")}
           />
