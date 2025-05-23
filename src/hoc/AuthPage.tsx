@@ -16,7 +16,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ component: Component, auth }) => {
     if (user?.peran[auth]) {
       return <Component />;
     } else {
-      makeToast("warning", "Anda tidak memiliki akses ke halaman ini");
+      // makeToast("warning", "Anda tidak memiliki akses ke halaman ini");
       nav("/akun");
     }
   } else {

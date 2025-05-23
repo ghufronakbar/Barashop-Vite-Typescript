@@ -49,13 +49,13 @@ const LoginPage = () => {
         <div className="flex flex-row items-center">
           <div className="w-full h-[1px] bg-gray-300" />
           <p className="px-2 text-xs flex-nowrap whitespace-nowrap text-center flex-1">
-            Lupa password?
+            Lupa kata sandi?
           </p>
           <div className="w-full h-[1px] bg-gray-300" />
         </div>
         <Link to={"/reset-password"} className="w-full">
           <Button variant="outline" className="w-full">
-            Reset Password
+            Reset Kata Sandi
           </Button>
         </Link>
         <span className="text-xs text-gray-400 text-center">

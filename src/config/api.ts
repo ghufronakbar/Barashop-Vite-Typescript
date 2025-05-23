@@ -14,6 +14,23 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error("Unauthorized access - redirecting to login. ERROR CODE: ", error?.response?.status);
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 401) {
+        Cookies.remove("ACCESS_TOKEN");
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.error("Unauthorized access - redirecting to login. ERROR CODE: ", error?.response?.status);
     if (error instanceof AxiosError) {
       if (error.response?.status === 401) {
         Cookies.remove("ACCESS_TOKEN");

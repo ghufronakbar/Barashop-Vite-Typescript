@@ -16,7 +16,7 @@ import {
 import { PLACEHOLDER } from "@/constant/image";
 import formatDate from "@/helper/formatDate";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import { Edit, Plus, SaveAll, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import formatRupiah from "@/helper/formatRupiah";
 import {
@@ -47,6 +47,13 @@ const ProdukPage = () => {
     setForm,
     handleSubmit,
     handleDelete,
+    isEditMode,
+    onChangeOnTable,
+    someEdited,
+    onToggleEditMode,
+    handleSaveAll,
+    findData,
+    loadingEditAll,
   } = useProduks();
   const TABLE_HEADERS = [
     "No",
@@ -64,10 +71,41 @@ const ProdukPage = () => {
     <DashboardLayout
       title="Produk"
       childredHeader={
-        <Button variant="default" onClick={onClickAdd}>
-          <Plus />
-          Tambah
-        </Button>
+        <div className="flex flex-row gap-2 items-center">
+          {isEditMode && (
+            <Button
+              variant="default"
+              className={
+                someEdited
+                  ? "bg-teal-500 text-white"
+                  : "bg-gray-600 cursor-not-allowed"
+              }
+              onClick={handleSaveAll}
+              disabled={!someEdited}
+            >
+              {loadingEditAll ? (
+                <div className="animate-spin w-4 h-4 border-2 border-t-transparent rounded-full "></div>
+              ) : (
+                <SaveAll />
+              )}
+              Simpan
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            onClick={onToggleEditMode}
+            className={
+              isEditMode ? "bg-red-600 text-white" : "bg-blue-600 text-white"
+            }
+          >
+            <Edit />
+            {isEditMode ? "Batal" : "Edit"}
+          </Button>
+          <Button variant="default" onClick={onClickAdd}>
+            <Plus />
+            Tambah
+          </Button>
+        </div>
       }
     >
       <div className="relative w-full md:w-fit min-w-[300px]">
@@ -92,7 +130,7 @@ const ProdukPage = () => {
           </TableHeader>
           <TableBody>
             {filteredData.map((item, index) => (
-              <TableRow key={item.foto_produk}>
+              <TableRow key={item.produk_id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <img
@@ -103,14 +141,51 @@ const ProdukPage = () => {
                     className="min-w-12 min-h-12 w-12 h-12 object-cover rounded-xl"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{item.nama_produk}</TableCell>
-                <TableCell>{item.kategori_produk}</TableCell>
-                <TableCell>{formatRupiah(item.harga_produk)}</TableCell>
+                <TableCell className="font-medium">
+                  {isEditMode ? (
+                    <Input
+                      value={findData(item.produk_id)?.nama_produk || ""}
+                      onChange={(e) =>
+                        onChangeOnTable(e, "nama_produk", item.produk_id)
+                      }
+                    />
+                  ) : (
+                    item.nama_produk
+                  )}
+                </TableCell>
+                <TableCell>
+                  {isEditMode ? (
+                    <Input
+                      value={findData(item.produk_id)?.kategori_produk || ""}
+                      onChange={(e) =>
+                        onChangeOnTable(e, "kategori_produk", item.produk_id)
+                      }
+                    />
+                  ) : (
+                    item.kategori_produk
+                  )}
+                </TableCell>
+                <TableCell>
+                  {isEditMode ? (
+                    <Input
+                      value={findData(item.produk_id)?.harga_produk || ""}
+                      onChange={(e) =>
+                        onChangeOnTable(e, "harga_produk", item.produk_id)
+                      }
+                    />
+                  ) : (
+                    formatRupiah(item.harga_produk)
+                  )}
+                </TableCell>
                 <TableCell>{formatRupiah(item.hpp)}</TableCell>
                 <TableCell>{item.jumlah_stok}</TableCell>
                 <TableCell>{item.total_terjual}</TableCell>
                 <TableCell>{formatDate(item.updated_at, true, true)}</TableCell>
                 <TableCell className="flex flex-row gap-2">
+                  {/* <div>
+                    DEBUG{" "}
+                    {findData(item.produk_id)?.edited ? "edited" : "not edited"}
+                  </div> */}
                   <Button
                     variant="secondary"
                     onClick={() => onClickItem(item, true)}
@@ -225,12 +300,19 @@ const initProdukDTO: ProdukDTO = {
   gambar: null,
 };
 
+interface ProdukWithEdit extends Produk {
+  edited: boolean;
+}
+
 const useProduks = () => {
   const [data, setData] = useState<Produk[]>([]);
+  const [dataWithEdit, setDataWithEdit] = useState<ProdukWithEdit[]>([]);
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<ProdukDTO>(initProdukDTO);
   const [isOpen, setIsOpen] = useState(false);
   const [pending, setPending] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [loadingEditAll, setLoadingEditAll] = useState(false);
 
   const onClickItem = (item: Produk, isEdit?: boolean) => {
     setForm({
@@ -259,6 +341,26 @@ const useProduks = () => {
     });
   };
 
+  const onChangeOnTable = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: keyof ProdukWithEdit,
+    id: string
+  ) => {
+    const newData: ProdukWithEdit[] = dataWithEdit.map((item) => {
+      if (item.produk_id === id) {
+        return {
+          ...item,
+          [key]: e.target.value,
+          edited: true,
+        };
+      }
+      return {
+        ...item,
+      };
+    });
+    setDataWithEdit(newData);
+  };
+
   const filteredData = data.filter((item) =>
     item.nama_produk.toLowerCase().includes(search.toLowerCase())
   );
@@ -266,7 +368,12 @@ const useProduks = () => {
   const fetchData = async () => {
     try {
       const res = await api.get<Api<Produk[]>>("/produk");
-      setData(res.data.data);
+      setData(
+        res.data.data.map((item) => ({
+          ...item,
+          edited: false,
+        }))
+      );
     } catch (error) {
       makeToast("error", error);
     }
@@ -287,7 +394,9 @@ const useProduks = () => {
       setPending(true);
       if (form.id) {
         setIsOpen(false);
-        await makeConfirm(async () => await api.put(`/produk/${form.id}`, form));        
+        await makeConfirm(
+          async () => await api.put(`/produk/${form.id}`, form)
+        );
         await fetchData();
         makeToast("success", "Berhasil mengedit produk");
       } else {
@@ -295,7 +404,7 @@ const useProduks = () => {
         await makeConfirm(async () => await api.post("/produk", form));
         await fetchData();
         makeToast("success", "Berhasil menambahkan produk");
-      }      
+      }
       setForm(initProdukDTO);
     } catch (error) {
       makeToast("error", error);
@@ -309,13 +418,86 @@ const useProduks = () => {
       if (!form.id) return;
       if (pending) return;
       setPending(true);
-      await makeConfirm(async () => await api.delete(`/produk/${form.id}`));      
+      await makeConfirm(async () => await api.delete(`/produk/${form.id}`));
       await fetchData();
       makeToast("success", "Berhasil menghapus produk");
     } catch (error) {
       makeToast("error", error);
     } finally {
       setPending(false);
+    }
+  };
+
+  const onToggleEditMode = () => {
+    setDataWithEdit(
+      data.map((item) => ({
+        ...item,
+        edited: false,
+      }))
+    );
+    setIsEditMode(!isEditMode);
+  };
+
+  const someEdited = dataWithEdit.some((item) => item.edited);
+
+  const findData = (id: string) => {
+    const data: ProdukWithEdit | undefined = dataWithEdit.find(
+      (item) => item.produk_id === id
+    );
+    if (data) {
+      return {
+        ...data,
+      };
+    }
+    return null;
+  };
+
+  const handleSaveAll = async () => {
+    if (loadingEditAll) return;
+    if (!dataWithEdit) return;
+    await makeConfirm(async () => await promiseSaveAll());
+  };
+
+  const promiseSaveAll = async () => {
+    try {      
+      setLoadingEditAll(true);
+      const promises: Promise<void>[] = [];
+      for (let i = 0; i < dataWithEdit.length; i += 5) {
+        const edited = dataWithEdit
+          .slice(i, i + 5)
+          .filter((item) => item.edited);
+        console.log(`Saving ${edited.length} items`);
+        promises.push(
+          (async () => {
+            for (const item of edited) {
+              try {
+                console.log(item.nama_produk, item.edited);
+                const dto: ProdukDTO = {
+                  id: item.produk_id,
+                  nama: item.nama_produk,
+                  kategori: item.kategori_produk,
+                  harga: item.harga_produk,
+                  deskripsi: item.deskripsi_produk,
+                  gambar: item.foto_produk,
+                };
+                await api.put(`/produk/${item.produk_id}`, dto);
+              } catch (error) {
+                console.log(error);
+                makeToast("error", error);
+              }
+            }
+          })()
+        );
+      }
+      await Promise.all(promises);
+      await fetchData();
+      makeToast("success", "Berhasil menyimpan semua perubahan");
+    } catch (error) {
+      console.log(error);
+      makeToast("error", error);
+    } finally {
+      onToggleEditMode();
+      setLoadingEditAll(false);
     }
   };
 
@@ -332,6 +514,13 @@ const useProduks = () => {
     setForm,
     handleSubmit,
     handleDelete,
+    onChangeOnTable,
+    isEditMode,
+    onToggleEditMode,
+    someEdited,
+    handleSaveAll,
+    findData,
+    loadingEditAll,
   };
 };
 

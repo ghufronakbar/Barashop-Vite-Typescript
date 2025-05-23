@@ -20,8 +20,8 @@ const ResetPasswordPage = () => {
         }}
       >
         <div>
-          <h1 className="text-2xl text-black font-medium">Reset Password</h1>
-          <p className="text-sm">Masukkan email untuk ganti ulang password</p>
+          <h1 className="text-2xl text-black font-medium">Reset Kata Sandi</h1>
+          <p className="text-sm">Masukkan email untuk ganti ulang kata sandi</p>
         </div>
         <div className="flex flex-col gap-2">
           <Label>Email</Label>

@@ -25,7 +25,7 @@ const PrivasiPage = () => {
       <div className="w-full flex flex-col justify-start md:flex-row md:justify-between gap-4 relative">
         <div className="flex flex-col gap-4 w-full md:w-1/2">
           <div className="flex flex-col gap-2 w-full ">
-            <Label>Password Lama</Label>
+            <Label>Kata Sandi Lama</Label>
             <Input
               value={form.password_lama}
               placeholder="********"
@@ -34,7 +34,7 @@ const PrivasiPage = () => {
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
-            <Label>Password Baru</Label>
+            <Label>Kata Sandi Baru</Label>
             <Input
               value={form.password_baru}
               placeholder="********"
@@ -43,7 +43,7 @@ const PrivasiPage = () => {
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
-            <Label>Konfirmasi Password</Label>
+            <Label>Konfirmasi Kata Sandi</Label>
             <Input
               value={form.password_konfirmasi}
               placeholder="********"
@@ -91,17 +91,17 @@ const usePrivasi = () => {
         }
       });
       if (form.password_baru !== form.password_konfirmasi) {
-        throw new Error("Password baru dan konfirmasi harus sama");
+        throw new Error("Kata sandi baru dan konfirmasi harus sama");
       }
       if (form.password_baru.length < 8) {
-        throw new Error("Password minimal 8 karakter");
+        throw new Error("Kata sandi minimal 8 karakter");
       }
       if (pending) return;
       setPending(true);
       makeToast("info");
       await api.patch("/akun", form);
       setForm(initChangePass);
-      makeToast("success", "Berhasil mengubah password");
+      makeToast("success", "Berhasil mengubah kata sandi");
     } catch (error) {
       makeToast("error", error);
     } finally {
